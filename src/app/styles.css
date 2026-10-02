@@ -376,3 +376,20 @@
 .theme-root .shared-row:hover,.theme-root .shared-row:focus-visible{background:color-mix(in srgb,var(--shared) 4%,var(--paper))!important}
 .theme-root .shared-badge{border-radius:3px;padding:2px 5px;background:color-mix(in srgb,var(--shared) 8%,var(--paper));color:var(--shared);font-size:8px;font-weight:600}
 .theme-root .shared-detail{color:var(--muted)!important;font-size:9px!important}
+
+/* The category header, item rows, and subtotal must share one identical
+   content box. Previously the list's inner padding shifted the rows relative
+   to the header, making the flexible numeric tracks appear misaligned. */
+.theme-root .line-category-list{padding-left:0;padding-right:0}
+.theme-root .line-category-columns,
+.theme-root .line-subtotal-row{margin-left:12px;margin-right:12px}
+.theme-root .line-category-list .line-table-row{padding-left:16px;padding-right:16px}
+.theme-root .line-category-columns>span:not(:first-child){text-align:center!important}
+.theme-root .line-table-row>span:nth-child(2),
+.theme-root .line-table-row>span:nth-child(3),
+.theme-root .line-table-row>span:nth-child(4),
+.theme-root .line-table-row>span:last-child{text-align:center!important}
+.theme-root .line-table-row>.line-amount,
+.theme-root .line-subtotal-row>.line-amount{text-align:right!important}
+.theme-root .line-subtotal-row>span:nth-child(2),
+.theme-root .line-subtotal-row>span:last-child{text-align:center!important}
