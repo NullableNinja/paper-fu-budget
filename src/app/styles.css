@@ -393,3 +393,23 @@
 .theme-root .line-subtotal-row>.line-amount{text-align:right!important}
 .theme-root .line-subtotal-row>span:nth-child(2),
 .theme-root .line-subtotal-row>span:last-child{text-align:center!important}
+
+/* Professional ledger typography: neutral sans-serif, regular detail rows,
+   and tabular figures for predictable accounting columns. */
+.theme-root .line-category,
+.theme-root .line-category-columns,
+.theme-root .line-category-list .line-table-row,
+.theme-root .line-category-list .line-table-row *{font-family:Arial,"Segoe UI",sans-serif}
+.theme-root .line-category-list .line-table-row,
+.theme-root .line-category-list .line-table-row b,
+.theme-root .line-category-list .line-table-row strong,
+.theme-root .line-category-list .line-table-row .line-name{font-weight:400!important}
+.theme-root .line-category-list .line-table-row .line-name{font-family:Arial,"Segoe UI",sans-serif!important;font-size:14px;letter-spacing:0;line-height:1.25}
+.theme-root .line-category-list .line-table-row .line-amount{font-family:Arial,"Segoe UI",sans-serif;font-size:12px;font-variant-numeric:tabular-nums lining-nums;font-weight:400!important}
+.theme-root .line-category-list .line-table-row .line-kind,
+.theme-root .line-category-list .line-table-row>span:nth-child(4),
+.theme-root .line-category-list .line-table-row .line-due{font-family:Arial,"Segoe UI",sans-serif;font-size:12px;font-weight:400}
+.theme-root .line-category-columns{font-family:Arial,"Segoe UI",sans-serif;font-weight:400}
+.theme-root .line-subtotal-row,
+.theme-root .line-subtotal-row .line-amount,
+.theme-root .line-subtotal-row b{font-weight:700!important}
