@@ -68,10 +68,12 @@
 .theme-root .alert.warning{background:var(--warning-surface);border-color:color-mix(in srgb,var(--warning) 55%,var(--line))}.theme-root .alert.error{background:var(--negative-surface);border-color:color-mix(in srgb,var(--negative) 55%,var(--line))}.theme-root .alert.success{background:var(--positive-surface);border-color:color-mix(in srgb,var(--positive) 55%,var(--line))}
 .theme-root .paycheck-hero.positive-state{background:var(--positive-surface)}.theme-root .paycheck-hero.negative-state{background:var(--negative-surface)}
 .theme-root .sidebar{position:sticky;top:0;height:100vh;overflow:auto}
+.theme-root .sidebar{overflow-x:hidden}
+.theme-root .profile{min-width:0}.theme-root .profile>div:last-child{min-width:0;overflow:hidden}.theme-root .profile b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .theme-root .money,.theme-root .metric-card strong,.theme-root .paycheck-hero strong,.theme-root .paycheck-remaining b,.theme-root .big-number b,.theme-root .flow b,.theme-root .allocation-list b,.theme-root .line-table-row strong,.theme-root .bill-table-row strong,.theme-root .scenario-stat b{font-variant-numeric:tabular-nums lining-nums}
 .theme-root :focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}.theme-root .button:disabled{cursor:not-allowed;opacity:.45;transform:none;box-shadow:none}
 .theme-root .eyebrow{font-size:10px;line-height:1.25}
-.theme-root{overflow-x:clip;overflow-y:visible}
+.theme-root{overflow-x:clip;overflow-y:clip}
 .theme-root .panel:after,.theme-root .metric-card:after{display:none}
 .theme-root .panel{box-shadow:0 7px 22px color-mix(in srgb,var(--shadow-color) 8%,transparent)}
 .theme-root .metric-card{box-shadow:0 7px 18px color-mix(in srgb,var(--shadow-color) 12%,transparent)}
@@ -137,3 +139,29 @@
 .theme-root .alert.error,.theme-root .negative-state{color:var(--negative)}
 @keyframes ambient-orbit{from{transform:translate3d(-1.5%,0,0) rotate(-1deg)}to{transform:translate3d(1.5%,2%,0) rotate(1deg)}}
 @media (max-width:700px){.theme-root .page-intro h2{font-size:35px}.theme-root .hero h2{font-size:42px}.theme-root .workspace-tabs{display:block;overflow:hidden;margin-top:-2px}.theme-root .workspace-tabs-label{display:block;margin-bottom:8px}.theme-root .workspace-tabs>div{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;scrollbar-width:none}.theme-root .workspace-tabs>div::-webkit-scrollbar{display:none}.theme-root .workspace-tabs a{flex:0 0 auto}.theme-root .line-tools{grid-template-columns:1fr;padding-bottom:13px}.theme-root .line-category-head{padding:14px}.theme-root .line-category-list{padding:0 12px}.theme-root .line-category-head h3{font-size:20px}.theme-root .line-table-row{padding:13px 2px}.theme-root .sheet-backdrop{align-items:end;padding:12px}.theme-root .sheet{width:100%;max-height:calc(100vh - 24px);border-radius:22px}.theme-root .sheet-body{max-height:calc(100vh - 132px);padding:18px 18px 24px}.theme-root .sheet-head{padding:18px}.theme-root .sheet-head h2{font-size:24px}}
+
+/* Period reconciliation and category-level totals. */
+.theme-root .period-summary{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.theme-root .period-summary-sticky{position:sticky;top:123px;z-index:3;padding:8px 0;background:color-mix(in srgb,var(--page-bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.theme-root .period-summary-card{min-width:0;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--paper) 88%,transparent);box-shadow:3px 3px 0 color-mix(in srgb,var(--shadow-color) 14%,transparent)}
+.theme-root .period-summary-card.positive-state{border-color:color-mix(in srgb,var(--positive) 42%,var(--line))}
+.theme-root .period-summary-card.negative-state{border-color:color-mix(in srgb,var(--negative) 42%,var(--line))}
+.theme-root .period-summary-card-head{display:flex;justify-content:space-between;gap:8px;font:10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
+.theme-root .period-summary-card-head i{font-style:normal;color:var(--positive)}
+.theme-root .period-summary-card.negative-state .period-summary-card-head i{color:var(--negative)}
+.theme-root .period-summary-card strong{display:block;margin:8px 0 5px;font:600 24px 'DM Mono',monospace}
+.theme-root .period-summary-card small,.theme-root .period-summary-card em{display:block;color:var(--muted);font-size:10px;font-style:normal;line-height:1.3}
+.theme-root .period-picker{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;padding:2px;background:color-mix(in srgb,var(--page-bg) 45%,transparent)}
+.theme-root .period-picker button{border:0;background:transparent;color:var(--muted);padding:8px 9px;border-radius:7px;font:10px 'DM Mono',monospace;cursor:pointer}
+.theme-root .period-picker button.active{background:var(--ink);color:var(--paper)}
+.theme-root .line-category-total{text-align:right;display:grid;gap:4px;justify-items:end}
+.theme-root .line-category-total strong{font:600 16px 'DM Mono',monospace}
+.theme-root .line-category-total span{font:10px 'DM Mono',monospace;color:var(--muted)}
+.theme-root .sheet-backdrop{display:flex;align-items:center;justify-content:center;overflow:auto}
+.theme-root .sheet{display:flex;flex-direction:column;align-self:center;max-height:min(820px,calc(100dvh - 40px));transform:translateZ(0)}
+.theme-root .sheet-body{min-height:0;overscroll-behavior:contain}
+.theme-root .sheet .edit-form{padding-bottom:2px}
+.theme-root .main{min-width:0;min-height:0}
+.theme-root .content{min-height:0}
+@media (max-width:980px){.theme-root .period-summary{grid-template-columns:repeat(2,1fr)}.theme-root .line-tools{grid-template-columns:1fr 1fr}.theme-root .period-picker{grid-column:1/-1;justify-content:space-between}.theme-root .period-picker button{flex:1}}
+@media (max-width:700px){.theme-root .period-summary{display:flex;overflow-x:auto;gap:9px;padding-bottom:4px;scrollbar-width:none}.theme-root .period-summary::-webkit-scrollbar{display:none}.theme-root .period-summary-card{flex:0 0 190px}.theme-root .period-summary-sticky{top:153px;margin-inline:-2px}.theme-root .period-picker{grid-column:auto}.theme-root .period-picker button{padding-inline:8px}.theme-root .line-category-total strong{font-size:14px}.theme-root .sheet-backdrop{align-items:end;padding:12px}.theme-root .sheet{max-height:calc(100dvh - 24px);border-radius:22px}.theme-root .sheet-body{max-height:calc(100dvh - 132px)}}

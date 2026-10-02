@@ -1,6 +1,14 @@
 import type { BudgetScenario, Frequency, ScenarioTotals } from '../models'
 import { calculateW2Taxes } from './taxes'
 
+export type BudgetPeriod = 'weekly' | 'biweekly' | 'monthly' | 'annual'
+export const budgetPeriods: Array<{ value: BudgetPeriod; label: string; shortLabel: string }> = [
+  { value: 'weekly', label: 'Weekly', shortLabel: 'Wk' },
+  { value: 'biweekly', label: 'Bi-weekly', shortLabel: 'Bi-wk' },
+  { value: 'monthly', label: 'Monthly', shortLabel: 'Mo' },
+  { value: 'annual', label: 'Annual', shortLabel: 'Yr' },
+]
+
 export const frequencyToMonthly = (amount: number, frequency: Frequency): number => {
   switch (frequency) {
     case 'weekly': return amount * 52 / 12
@@ -11,6 +19,22 @@ export const frequencyToMonthly = (amount: number, frequency: Frequency): number
     default: return amount
   }
 }
+
+export const monthlyToPeriod = (monthly: number, period: BudgetPeriod, paychecksPerYear = 26): number => {
+  if (period === 'weekly') return monthly * 12 / 52
+  if (period === 'biweekly') return monthly * 12 / paychecksPerYear
+  if (period === 'annual') return monthly * 12
+  return monthly
+}
+
+export const annualToPeriod = (annual: number, period: BudgetPeriod, paychecksPerYear = 26): number => {
+  if (period === 'weekly') return annual / 52
+  if (period === 'biweekly') return annual / paychecksPerYear
+  if (period === 'monthly') return annual / 12
+  return annual
+}
+
+export const periodLabel = (period: BudgetPeriod) => budgetPeriods.find((candidate) => candidate.value === period)?.label ?? 'Monthly'
 
 export const calculateScenario = (scenario: BudgetScenario): ScenarioTotals => {
   const active = scenario.items.filter((candidate) => candidate.active)
