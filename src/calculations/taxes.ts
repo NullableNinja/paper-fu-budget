@@ -2,6 +2,8 @@ import type { BudgetScenario, FilingStatus, IncomeSource, W2TaxProfile } from '.
 
 export interface TaxEstimate {
   grossWages: number
+  primaryGrossWages: number
+  spouseGrossWages: number
   grossIncome: number
   retirement401k: number
   federalAdjustedGrossIncome: number
@@ -105,8 +107,13 @@ export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   const sourceWages = activeSources.reduce((sum, source) => sum + annualGrossForSource(source), 0)
   const legacySpouseWages = profile.spouseWages > 0 && !scenario.incomeSources.some((source) => source.memberId === 'vicki') ? profile.spouseWages : 0
   const grossWages = activeSources.length > 0 ? sourceWages + legacySpouseWages : scenario.incomeSources.length > 0 ? legacySpouseWages : scenario.salary
+  const spouseGrossWages = activeSources.filter((source) => source.memberId === 'vicki').reduce((sum, source) => sum + annualGrossForSource(source), 0) + legacySpouseWages
+  const primaryGrossWages = Math.max(0, grossWages - spouseGrossWages)
   const grossIncome = grossWages + profile.otherAnnualIncome
-  const retirement401k = grossWages * profile.retirement401kRate
+  // The editable payroll elections belong to the primary W-2 profile. When a
+  // spouse is included, household wages and taxes include both people, but
+  // the primary person's deductions apply only to the primary wages.
+  const retirement401k = primaryGrossWages * profile.retirement401kRate
   const federalAdjustedGrossIncome = Math.max(0, grossIncome - retirement401k - profile.annualPreTaxBenefits)
   const federalStandard = federalStandardDeduction[profile.filingStatus]
   const federalTaxableIncome = Math.max(0, federalAdjustedGrossIncome - federalStandard)
@@ -124,7 +131,7 @@ export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   const additionalMedicare = Math.max(0, ficaWages - medicareThreshold) * 0.009
   const totalTaxes = federalIncomeTax + wisconsinIncomeTax + socialSecurity + medicare + additionalMedicare
   const annualNet = grossWages - retirement401k - profile.annualPreTaxBenefits - totalTaxes - profile.annualPostTaxDeductions
-  return { grossWages, grossIncome, retirement401k, federalAdjustedGrossIncome, federalStandardDeduction: federalStandard, federalTaxableIncome, federalIncomeTax, childTaxCredit: childrenCredit, wisconsinStandardDeduction: wiStandard, wisconsinExemptions: wiExemptions, wisconsinTaxableIncome: wiTaxableIncome, wisconsinIncomeTax, socialSecurity, medicare, additionalMedicare, totalTaxes, postTaxDeductions: profile.annualPostTaxDeductions, annualNet, paycheckNet: annualNet / scenario.paychecksPerYear, effectiveTaxRate: grossWages ? totalTaxes / grossWages : 0, assumptions: ['2026 federal brackets and standard deductions', 'Wisconsin 2026 full-year resident rates and standard deduction', 'Social Security wage base of $184,500', 'Employer withholding and credits may differ from final return liability'] }
+  return { grossWages, primaryGrossWages, spouseGrossWages, grossIncome, retirement401k, federalAdjustedGrossIncome, federalStandardDeduction: federalStandard, federalTaxableIncome, federalIncomeTax, childTaxCredit: childrenCredit, wisconsinStandardDeduction: wiStandard, wisconsinExemptions: wiExemptions, wisconsinTaxableIncome: wiTaxableIncome, wisconsinIncomeTax, socialSecurity, medicare, additionalMedicare, totalTaxes, postTaxDeductions: profile.annualPostTaxDeductions, annualNet, paycheckNet: annualNet / scenario.paychecksPerYear, effectiveTaxRate: grossWages ? totalTaxes / grossWages : 0, assumptions: ['2026 federal brackets and standard deductions', 'Wisconsin 2026 full-year resident rates and standard deduction', 'Social Security wage base of $184,500', 'Primary W-2 deductions apply to primary wages; spouse payroll elections must be entered separately', 'Employer withholding and credits may differ from final return liability'] }
 }
 
 export const calculateSourceNetContribution = (scenario: BudgetScenario, sourceId: string): number => {

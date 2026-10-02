@@ -79,4 +79,15 @@ describe('budget calculation engine', () => {
     const withSource = { ...scenario, incomeSources: [...scenario.incomeSources, source] }
     expect(calculateSourceNetContribution(withSource, source.id)).toBeGreaterThan(0)
   })
+
+  it('treats spouse wages as household income instead of charging joint taxes to one paycheck', () => {
+    const scenario = structuredClone(initialSnapshot.scenarios[0])
+    scenario.taxProfile = { ...scenario.taxProfile, filingStatus: 'mfj', qualifyingChildren: 1 }
+    scenario.incomeSources.push({ id: 'vicki-job', name: 'Vicki', memberId: 'vicki', payType: 'salary', annualSalary: 57235.1, annualGross: 57235.1, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } })
+    const estimate = calculateW2Taxes(scenario)
+    expect(estimate.primaryGrossWages).toBeCloseTo(125000)
+    expect(estimate.spouseGrossWages).toBeCloseTo(57235.1)
+    expect(estimate.grossWages).toBeCloseTo(182235.1)
+    expect(estimate.annualNet).toBeGreaterThan(100000)
+  })
 })
