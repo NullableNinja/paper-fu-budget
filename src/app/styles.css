@@ -560,3 +560,35 @@
   .theme-root .line-subtotal-row,
   .theme-root .line-cumulative-row{grid-template-columns:270px 88px 78px 88px repeat(5,78px)}
 }
+
+/* Totals are deliberately set apart from the item list. Both summary rows
+   use the same larger accounting treatment, while detail rows stay lighter. */
+.theme-root .line-category-list .line-table-row .line-name{font-size:13px}
+.theme-root .line-subtotal-row,
+.theme-root .line-cumulative-row{
+  min-height:54px;
+  font-size:14px;
+  line-height:1.25;
+  font-weight:700;
+}
+.theme-root .line-subtotal-row{
+  margin-top:10px;
+  border-top:2px solid var(--line)!important;
+  background:color-mix(in srgb,var(--positive) 10%,var(--paper))!important;
+  padding-top:13px;
+  padding-bottom:13px;
+}
+.theme-root .line-cumulative-row{
+  margin-top:4px;
+  border-top:1px solid var(--line)!important;
+  border-bottom:1px solid var(--line)!important;
+  background:color-mix(in srgb,var(--ink) 5%,var(--paper))!important;
+  padding-top:11px;
+  padding-bottom:11px;
+}
+.theme-root .line-subtotal-row b,
+.theme-root .line-cumulative-row b{font-size:14px;font-weight:700}
+.theme-root .line-subtotal-row small,
+.theme-root .line-cumulative-row small{font-size:10px;line-height:1.2}
+.theme-root .line-subtotal-row .line-amount,
+.theme-root .line-cumulative-row .line-amount{font-size:14px!important;font-weight:700!important}
