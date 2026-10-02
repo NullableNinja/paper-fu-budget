@@ -165,3 +165,28 @@
 .theme-root .content{min-height:0}
 @media (max-width:980px){.theme-root .period-summary{grid-template-columns:repeat(2,1fr)}.theme-root .line-tools{grid-template-columns:1fr 1fr}.theme-root .period-picker{grid-column:1/-1;justify-content:space-between}.theme-root .period-picker button{flex:1}}
 @media (max-width:700px){.theme-root .period-summary{display:flex;overflow-x:auto;gap:9px;padding-bottom:4px;scrollbar-width:none}.theme-root .period-summary::-webkit-scrollbar{display:none}.theme-root .period-summary-card{flex:0 0 190px}.theme-root .period-summary-sticky{top:153px;margin-inline:-2px}.theme-root .period-picker{grid-column:auto}.theme-root .period-picker button{padding-inline:8px}.theme-root .line-category-total strong{font-size:14px}.theme-root .sheet-backdrop{align-items:end;padding:12px}.theme-root .sheet{max-height:calc(100dvh - 24px);border-radius:22px}.theme-root .sheet-body{max-height:calc(100dvh - 132px)}}
+
+/* Compact ledger presentation: all four workbook periods stay visible together. */
+.theme-root .topbar{padding:16px 32px 13px}
+.theme-root .topbar h1{font-size:26px}
+.theme-root .scenario-select{width:185px}
+.theme-root .content{padding:22px 32px 55px}
+.theme-root .page-intro h2{font-size:34px}
+.theme-root .period-summary-sticky{top:76px;padding:4px 0}
+.theme-root .period-summary-card{padding:8px 10px;border-radius:10px;box-shadow:2px 2px 0 color-mix(in srgb,var(--shadow-color) 12%,transparent)}
+.theme-root .period-summary-card strong{margin:4px 0 2px;font-size:20px}
+.theme-root .period-summary-card small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme-root .period-summary-card em{display:none}
+.theme-root .line-summary{padding:8px 0 10px}
+.theme-root .line-table-head,.theme-root .line-table-row,.theme-root .line-subtotal-row{grid-template-columns:minmax(240px,1.7fr) 78px 82px repeat(4,minmax(74px,1fr)) 78px;gap:10px}
+.theme-root .line-table-head{padding:9px 4px 8px;font-size:9px}
+.theme-root .line-category-head{padding:11px 16px 10px}
+.theme-root .line-category-head h3{font-size:19px}
+.theme-root .line-category-list{padding:0 12px}
+.theme-root .line-category .line-table-row{padding:10px 4px}
+.theme-root .line-amount,.theme-root .line-subtotal-row .line-amount{text-align:right;font:500 11px 'DM Mono',monospace;white-space:nowrap}
+.theme-root .line-subtotal-row{align-items:center;border-top:2px solid var(--line);padding:10px 4px;background:color-mix(in srgb,var(--positive) 8%,transparent);font-size:11px}
+.theme-root .line-subtotal-row b,.theme-root .line-subtotal-row small{display:block}
+.theme-root .line-subtotal-row small{margin-top:3px;color:var(--muted);font:9px 'DM Mono',monospace}
+.theme-root .line-subtotal-row>span:last-child{text-align:right;font:10px 'DM Mono',monospace}
+@media (max-width:700px){.theme-root .topbar{padding:13px 18px 11px}.theme-root .topbar h1{font-size:22px}.theme-root .scenario-select{width:100%}.theme-root .content{padding:18px 18px 85px}.theme-root .page-intro h2{font-size:31px}.theme-root .period-summary-sticky{top:112px}.theme-root .period-summary-card{flex-basis:168px}.theme-root .line-items{overflow-x:auto}.theme-root .line-table-body{min-width:850px}.theme-root .line-table-head,.theme-root .line-table-row,.theme-root .line-subtotal-row{grid-template-columns:240px 78px 82px repeat(4,78px) 78px}.theme-root .line-table-head{display:grid}.theme-root .line-table-row>span:nth-child(2),.theme-root .line-table-row>span:nth-child(3){display:block}.theme-root .line-table-row strong{grid-column:auto;grid-row:auto}.theme-root .line-table-row>span:last-child{grid-column:auto;grid-row:auto;text-align:left}}
