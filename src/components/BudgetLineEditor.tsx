@@ -17,8 +17,11 @@ export const BudgetLineEditor = ({ item, onClose, onSave }: { item: BudgetItem; 
       <label>Pay bill / account URL<input type="url" placeholder="https://…" value={draft.url ?? ''} onChange={(event) => update('url', event.target.value)} /></label>
       <label className="check-row"><input type="checkbox" checked={draft.autoPay ?? false} onChange={(event) => update('autoPay', event.target.checked)} /> Auto-pay enabled</label>
       <label className="check-row"><input type="checkbox" checked={draft.active} onChange={(event) => update('active', event.target.checked)} /> Include this line in calculations</label>
+      <div className="shared-expense-editor"><p className="eyebrow">Household split</p><label className="check-row"><input type="checkbox" checked={draft.shared ?? false} onChange={(event) => update('shared', event.target.checked)} /> Shared expense — this amount is my share</label>{draft.shared && <div className="form-grid"><label>My share<input type="number" min="1" max="100" step="1" value={draft.sharedSharePercent ?? 50} onChange={(event) => update('sharedSharePercent', Number(event.target.value))} />%</label><p className="field-help">At {draft.sharedSharePercent ?? 50}%, a {formatEditorCurrency(draft.amountMonthly / ((draft.sharedSharePercent ?? 50) / 100))} household bill is shown here as your {formatEditorCurrency(draft.amountMonthly)} share.</p></div>}</div>
       <label>Notes<textarea value={draft.notes ?? ''} onChange={(event) => update('notes', event.target.value)} placeholder="What is this for? Is it an estimate, target, or hard bill?" /></label>
       <button className="button primary wide">Save line item</button>
     </form>
   </Sheet>
 }
+
+const formatEditorCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(value)

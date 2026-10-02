@@ -3,17 +3,25 @@ import type { BudgetItem, ItemKind } from '../models'
 import { budgetPeriods, frequencyToMonthly, formatCurrency, monthlyToPeriod } from '../calculations/engine'
 
 const kinds: Array<ItemKind | 'all'> = ['all', 'fixed', 'variable', 'debt', 'savings', 'discretionary']
+type OwnershipFilter = 'all' | 'shared' | 'individual'
+
+const sharePercent = (item: BudgetItem) => Math.min(100, Math.max(1, item.sharedSharePercent ?? 50))
+const householdAmount = (item: BudgetItem) => item.amountMonthly / (sharePercent(item) / 100)
 
 export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYear = 26 }: { items: BudgetItem[]; onSelect?: (item: BudgetItem) => void; compact?: boolean; paychecksPerYear?: number }) => {
   const [query, setQuery] = useState('')
   const [kind, setKind] = useState<ItemKind | 'all'>('all')
   const [category, setCategory] = useState('all')
+  const [ownership, setOwnership] = useState<OwnershipFilter>('all')
   const [showInactive, setShowInactive] = useState(false)
+  const [showSharedDetails, setShowSharedDetails] = useState(true)
   const categories = useMemo(() => Array.from(new Set(items.map((item) => item.category))).sort(), [items])
+  const sharedCount = items.filter((item) => item.shared && item.active).length
   const filtered = useMemo(() => items.filter((item) => {
     const text = `${item.name} ${item.category} ${item.notes ?? ''}`.toLowerCase()
-    return (showInactive || item.active) && (!query || text.includes(query.toLowerCase())) && (kind === 'all' || item.kind === kind) && (category === 'all' || item.category === category)
-  }), [items, query, kind, category, showInactive])
+    const ownershipMatches = ownership === 'all' || (ownership === 'shared' ? item.shared : !item.shared)
+    return (showInactive || item.active) && ownershipMatches && (!query || text.includes(query.toLowerCase())) && (kind === 'all' || item.kind === kind) && (category === 'all' || item.category === category)
+  }), [items, query, kind, category, ownership, showInactive])
   const grouped = useMemo(() => Array.from(new Set(filtered.map((item) => item.category))).sort().map((group) => ({
     category: group,
     items: filtered.filter((item) => item.category === group),
@@ -22,15 +30,20 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
   const subtotalFor = (groupItems: BudgetItem[], period: typeof budgetPeriods[number]) => formatCurrency(monthlyToPeriod(groupItems.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0), period.value, paychecksPerYear), true)
 
   return <div className={`line-items ${compact ? 'compact' : ''}`}>
-    <div className="line-tools"><input aria-label="Search budget lines" placeholder="Search every line item…" value={query} onChange={(event) => setQuery(event.target.value)} /><select aria-label="Filter by kind" value={kind} onChange={(event) => setKind(event.target.value as ItemKind | 'all')}>{kinds.map((value) => <option key={value} value={value}>{value === 'all' ? 'All types' : value}</option>)}</select><select aria-label="Filter by category" value={category} onChange={(event) => setCategory(event.target.value)}><option value="all">All categories</option>{categories.map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
-    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>Every amount is normalized to the four planning periods</span><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label></div>
+    <div className="line-tools">
+      <input aria-label="Search budget lines" placeholder="Search every line item…" value={query} onChange={(event) => setQuery(event.target.value)} />
+      <select aria-label="Filter by kind" value={kind} onChange={(event) => setKind(event.target.value as ItemKind | 'all')}>{kinds.map((value) => <option key={value} value={value}>{value === 'all' ? 'All types' : value}</option>)}</select>
+      <select aria-label="Filter by category" value={category} onChange={(event) => setCategory(event.target.value)}><option value="all">All categories</option>{categories.map((value) => <option key={value} value={value}>{value}</option>)}</select>
+      <select aria-label="Filter by ownership" value={ownership} onChange={(event) => setOwnership(event.target.value as OwnershipFilter)}><option value="all">All ownership</option><option value="shared">Shared only</option><option value="individual">My expenses</option></select>
+    </div>
+    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>{sharedCount ? `${sharedCount} shared · amounts shown are your share` : 'Mark split bills as shared in the editor'}</span><label className="check-row"><input type="checkbox" checked={showSharedDetails} onChange={(event) => setShowSharedDetails(event.target.checked)} /> Show shared details</label><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label></div>
     <div className="line-table-head"><span>Line item</span><span>Type</span><span>Frequency</span>{budgetPeriods.map((period) => <span key={period.value}>{period.label}</span>)}<span>Status</span></div>
     <div className="line-table-body">{grouped.map(({ category: group, items: groupItems }) => <section className="line-category" key={group}>
       <div className="line-category-head"><div><span className="eyebrow">Category</span><h3>{group}</h3></div><span>{groupItems.filter((item) => item.active).length} active lines</span></div>
-      <div className="line-category-list">{groupItems.map((item, index) => <button className={`line-table-row ${item.active ? '' : 'inactive'} ${index % 2 ? 'row-alt' : ''}`} key={item.id} onClick={() => onSelect?.(item)} disabled={!onSelect}>
-        <span><b>{item.name}</b><small>{item.dueDay ? `Due day ${item.dueDay}` : 'No due date'}{item.autoPay ? ' · auto-pay' : ''}</small></span><span className="line-kind">{item.kind}</span><span>{item.frequency}</span>{budgetPeriods.map((period) => <strong className="line-amount" key={period.value}>{amountFor(item, period)}</strong>)}<span className={item.active ? 'positive' : 'muted'}>{item.active ? 'Included' : 'Off'}</span>
+      <div className="line-category-list">{groupItems.map((item, index) => <button className={`line-table-row ${item.active ? '' : 'inactive'} ${index % 2 ? 'row-alt' : ''} ${item.shared ? 'shared-row' : ''}`} key={item.id} onClick={() => onSelect?.(item)} disabled={!onSelect}>
+        <span className="line-item-copy"><b>{item.name}</b>{showSharedDetails && item.shared && <span className="shared-badge">Shared · your {sharePercent(item)}%</span>}<small>{item.dueDay ? `Due day ${item.dueDay}` : 'No due date'}{item.autoPay ? ' · auto-pay' : ''}</small>{showSharedDetails && item.shared && <small className="shared-detail">Household {formatCurrency(householdAmount(item), true)} · your share {formatCurrency(item.amountMonthly, true)}</small>}</span><span className="line-kind">{item.kind}</span><span>{item.frequency}</span>{budgetPeriods.map((period) => <strong className="line-amount" key={period.value}>{amountFor(item, period)}</strong>)}<span className={item.active ? 'positive' : 'muted'}>{item.active ? 'Included' : 'Off'}</span>
       </button>)}</div>
-      <div className="line-subtotal-row"><span><b>Category subtotal</b><small>{groupItems.filter((item) => item.active).length} active lines</small></span><span /><span />{budgetPeriods.map((period) => <strong className="line-amount" key={period.value}>{subtotalFor(groupItems, period)}</strong>)}<span className="positive">Included</span></div>
+      <div className="line-subtotal-row"><span><b>Category subtotal</b><small>{groupItems.filter((item) => item.active).length} active lines{groupItems.some((item) => item.active && item.shared) ? ` · ${groupItems.filter((item) => item.active && item.shared).length} shared` : ''}</small></span><span /><span />{budgetPeriods.map((period) => <strong className="line-amount" key={period.value}>{subtotalFor(groupItems, period)}</strong>)}<span className="positive">Included</span></div>
     </section>)}{filtered.length === 0 && <div className="empty-state">No line items match these filters.</div>}</div>
   </div>
 }

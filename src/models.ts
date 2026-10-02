@@ -43,6 +43,8 @@ export interface BudgetItem {
   url?: string
   autoPay?: boolean
   notes?: string
+  shared?: boolean
+  sharedSharePercent?: number
   active: boolean
   paid?: boolean
   paidAt?: string

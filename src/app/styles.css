@@ -200,3 +200,30 @@
 .sheet-head{margin:0;padding:22px 24px 17px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 84%,var(--page-bg));align-items:center}
 .sheet-head .eyebrow{margin:0 0 6px}.sheet-head h2{font-size:27px}.sheet-body{flex:1;min-height:0;padding:22px 24px 30px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}.sheet .edit-form{gap:16px;padding-bottom:8px}.sheet .edit-form .button.wide{position:sticky;bottom:0;z-index:2;margin-top:6px;background:var(--ink);box-shadow:0 -10px 16px color-mix(in srgb,var(--paper) 92%,transparent),0 3px 0 color-mix(in srgb,var(--ink) 35%,transparent)}
 @media (max-width:700px){.sheet-backdrop{padding:12px}.sheet{width:100%;height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:22px}.sheet-head{padding:18px}.sheet-head h2{font-size:24px}.sheet-body{padding:18px 18px 30px}}
+
+/* Visual system pass: restrained radii, explicit financial status colors, and visible paper layers. */
+.theme-root{--surface-radius:8px;--surface-shadow:0 1px 0 color-mix(in srgb,var(--shadow-color) 12%,transparent),4px 4px 0 color-mix(in srgb,var(--shadow-color) 20%,transparent),8px 8px 0 color-mix(in srgb,var(--shadow-color) 9%,transparent)}
+.positive{color:var(--positive)!important}.negative{color:var(--negative)!important}
+.theme-root .panel,.theme-root .metric-card,.theme-root .hero,.theme-root .paycheck-hero,.theme-root .insight,.theme-root .scenario-card,.theme-root .period-summary-card{border-radius:8px;box-shadow:var(--surface-shadow)}
+.theme-root .hero,.theme-root .paycheck-hero{border-radius:12px}
+.theme-root .panel{border-color:color-mix(in srgb,var(--ink) 28%,var(--line))}
+.theme-root .button,.theme-root .chip,.theme-root .segmented-control,.theme-root .date-badge,.theme-root input,.theme-root select,.theme-root textarea{border-radius:4px}
+.theme-root .metric-card.tone-positive{background:color-mix(in srgb,var(--positive) 18%,var(--paper));border-color:color-mix(in srgb,var(--positive) 65%,var(--line));color:var(--ink)}
+.theme-root .metric-card.tone-negative{background:color-mix(in srgb,var(--negative) 17%,var(--paper));border-color:color-mix(in srgb,var(--negative) 65%,var(--line));color:var(--ink)}
+.theme-root .metric-card.tone-positive strong,.theme-root .metric-card.tone-positive .metric-head,.theme-root .metric-card.tone-negative strong,.theme-root .metric-card.tone-negative .metric-head{color:var(--ink)}
+.theme-root .line-tools{grid-template-columns:minmax(220px,1fr) 140px 170px 160px}
+.theme-root .line-summary .check-row{margin-left:0}
+.theme-root .line-item-copy{display:grid;gap:3px;align-items:start}
+.theme-root .line-item-copy>b{font-weight:600}
+.theme-root .shared-row{background:var(--shared-surface)!important;box-shadow:inset 3px 0 0 var(--shared)}
+.theme-root .shared-row:hover,.theme-root .shared-row:focus-visible{background:color-mix(in srgb,var(--shared) 17%,var(--paper))!important}
+.shared-badge{width:max-content;color:var(--shared);border:1px solid color-mix(in srgb,var(--shared) 58%,var(--line));background:color-mix(in srgb,var(--shared) 12%,transparent);padding:2px 5px;border-radius:3px;font:600 9px 'DM Mono',monospace;letter-spacing:.04em;text-transform:uppercase}
+.shared-detail{color:var(--shared)!important;font-size:9px!important}
+.shared-expense-editor{display:grid;gap:10px;border-left:3px solid var(--shared);padding:12px;background:var(--shared-surface)}
+.shared-expense-editor .eyebrow{color:var(--shared)}
+.field-help{margin:0;color:var(--muted);font-size:11px;line-height:1.45;align-self:end}
+.panel-lede{max-width:680px;margin:9px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.explanation-panel{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(210px,.6fr);gap:30px;align-items:center}
+.theme-root .reconciliation{background:color-mix(in srgb,var(--paper) 92%,var(--page-bg));}
+@media (max-width:980px){.theme-root .line-tools{grid-template-columns:minmax(180px,1fr) 1fr 1fr}.theme-root .line-tools select:last-child{grid-column:1/-1}.explanation-panel{grid-template-columns:1fr}}
+@media (max-width:700px){.theme-root .line-tools{grid-template-columns:1fr}.theme-root .line-tools select:last-child{grid-column:auto}.theme-root .line-summary{align-items:flex-start}.theme-root .line-summary .check-row{margin-left:0}.theme-root .line-item-copy{max-width:calc(100vw - 130px)}.explanation-panel{gap:16px}}

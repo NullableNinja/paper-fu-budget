@@ -67,6 +67,8 @@ export const themeCssVars = (theme: ThemeConfig): CSSProperties => {
     '--mint': mint,
     '--positive': positive,
     '--negative': negative,
+    '--shared': theme.mode === 'dark' ? '#b7a4ff' : '#6d50b4',
+    '--shared-surface': theme.mode === 'dark' ? '#2c2547' : '#f0eaff',
     '--chart-1': theme.mode === 'dark' ? '#8fa9ff' : '#151b27',
     '--chart-2': theme.mode === 'dark' ? '#ff9c83' : '#e17a62',
     '--chart-3': theme.mode === 'dark' ? '#83d4b4' : '#9cc8b2',
