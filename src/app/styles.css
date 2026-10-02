@@ -211,7 +211,7 @@
 .theme-root .metric-card.tone-positive{background:color-mix(in srgb,var(--positive) 18%,var(--paper));border-color:color-mix(in srgb,var(--positive) 65%,var(--line));color:var(--ink)}
 .theme-root .metric-card.tone-negative{background:color-mix(in srgb,var(--negative) 17%,var(--paper));border-color:color-mix(in srgb,var(--negative) 65%,var(--line));color:var(--ink)}
 .theme-root .metric-card.tone-positive strong,.theme-root .metric-card.tone-positive .metric-head,.theme-root .metric-card.tone-negative strong,.theme-root .metric-card.tone-negative .metric-head{color:var(--ink)}
-.theme-root .line-tools{grid-template-columns:minmax(220px,1fr) 140px 170px 160px}
+.theme-root .line-tools{grid-template-columns:minmax(220px,1fr) 130px 160px 145px 145px}
 .theme-root .line-summary .check-row{margin-left:0}
 .theme-root .line-item-copy{display:grid;gap:3px;align-items:start}
 .theme-root .line-item-copy>b{font-weight:600}
@@ -227,3 +227,9 @@
 .theme-root .reconciliation{background:color-mix(in srgb,var(--paper) 92%,var(--page-bg));}
 @media (max-width:980px){.theme-root .line-tools{grid-template-columns:minmax(180px,1fr) 1fr 1fr}.theme-root .line-tools select:last-child{grid-column:1/-1}.explanation-panel{grid-template-columns:1fr}}
 @media (max-width:700px){.theme-root .line-tools{grid-template-columns:1fr}.theme-root .line-tools select:last-child{grid-column:auto}.theme-root .line-summary{align-items:flex-start}.theme-root .line-summary .check-row{margin-left:0}.theme-root .line-item-copy{max-width:calc(100vw - 130px)}.explanation-panel{gap:16px}}
+
+.profile-copy{min-width:0;display:grid;gap:2px}.profile-copy .profile-label{font:600 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.profile-copy b,.profile-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile-copy b{font-size:12px}.profile-copy small{font-size:10px;color:var(--muted)}
+.bill-table-row.bill-late,.bill-row.bill-late{background:color-mix(in srgb,var(--negative) 10%,transparent);box-shadow:inset 3px 0 0 var(--negative)}.bill-table-row.bill-paid,.bill-row.bill-paid{opacity:.68}.bill-table-row.bill-paid .date-badge{filter:saturate(.55)}.bill-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.bill-status{font:600 10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em}.bill-status.negative{color:var(--negative)!important}.bill-status.positive{color:var(--positive)!important}
+.tag-list{display:flex;gap:4px;flex-wrap:wrap}.tag-badge{width:max-content;color:var(--muted);border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 70%,var(--page-bg));padding:2px 5px;border-radius:3px;font:9px 'DM Mono',monospace}.note-indicator{font-style:italic}
+.debt-payment-entry{display:grid;gap:10px;border-left:3px solid var(--accent);padding:12px;background:color-mix(in srgb,var(--accent) 8%,var(--paper))}.debt-payment-entry .eyebrow{color:var(--accent)}.debt-balance-preview{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.debt-balance-preview strong{font:600 16px 'DM Mono',monospace;color:var(--ink)}
+@media (max-width:700px){.bill-actions{justify-content:flex-start}.bill-status{width:100%}.profile-copy b{max-width:190px}}

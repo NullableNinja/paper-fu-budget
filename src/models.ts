@@ -45,6 +45,7 @@ export interface BudgetItem {
   notes?: string
   shared?: boolean
   sharedSharePercent?: number
+  tags?: string[]
   active: boolean
   paid?: boolean
   paidAt?: string
@@ -59,6 +60,13 @@ export interface IncomeSource {
   active: boolean
 }
 
+export interface DebtPayment {
+  id: string
+  date: string
+  amount: number
+  interestAdjustment?: number
+}
+
 export interface DebtRecord {
   id: string
   debtor: string
@@ -66,6 +74,7 @@ export interface DebtRecord {
   minimumMonthly: number
   dueDay?: number
   balance: number
+  payments?: DebtPayment[]
 }
 
 export interface BudgetScenario {
