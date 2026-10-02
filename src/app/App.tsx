@@ -16,7 +16,23 @@ import { navigate, useHashRoute } from './useHashRoute'
 import './styles.css'
 import { ThemeRoot, defaultTheme, normalizeTheme, themePresets, type ThemeConfig, type ThemeBackground } from './theme'
 
-const nav = [{ href: '/dashboard', label: 'Overview', icon: 'grid' }, { href: '/budget', label: 'All line items', icon: 'wallet' }, { href: '/paychecks', label: 'Paycheck plan', icon: 'chart' }, { href: '/income', label: 'Income', icon: 'chart' }, { href: '/savings', label: 'Savings', icon: 'chart' }, { href: '/debts', label: 'Debts', icon: 'list' }, { href: '/bills', label: 'Bills', icon: 'list' }, { href: '/scenarios', label: 'Scenarios', icon: 'copy' }, { href: '/settings/taxes', label: 'Tax profile', icon: 'chart' }, { href: '/settings', label: 'Settings', icon: 'settings' }]
+const nav = [
+  { href: '/dashboard', label: 'Overview', icon: 'grid', matches: ['/dashboard', '/'] },
+  { href: '/budget', label: 'All line items', icon: 'wallet', matches: ['/budget'] },
+  { href: '/paychecks', label: 'Plan', icon: 'chart', matches: ['/paychecks', '/income', '/savings'] },
+  { href: '/bills', label: 'Commitments', icon: 'list', matches: ['/debts', '/bills'] },
+  { href: '/scenarios', label: 'Scenarios', icon: 'copy', matches: ['/scenarios'] },
+  { href: '/settings/taxes', label: 'Tax profile', icon: 'chart', matches: ['/settings/taxes'] },
+  { href: '/settings', label: 'Settings', icon: 'settings', matches: ['/settings'] },
+]
+const sidebarSections = [{ label: 'Workspace', items: nav.slice(0, 2) }, { label: 'Planning', items: nav.slice(2, 5) }, { label: 'Setup', items: nav.slice(5) }]
+const pageTabGroups = [
+  { label: 'Plan', tabs: [{ href: '/paychecks', label: 'Paycheck plan' }, { href: '/income', label: 'Income' }, { href: '/savings', label: 'Savings' }] },
+  { label: 'Commitments', tabs: [{ href: '/debts', label: 'Debts' }, { href: '/bills', label: 'Bills' }] },
+]
+const isRouteMatch = (route: string, match: string) => match === '/' ? route === '/' : route === match || route.startsWith(`${match}/`)
+const activeTab = (route: string) => pageTabGroups.flatMap((group) => group.tabs).find((tab) => isRouteMatch(route, tab.href))
+const PageTabs = ({ route }: { route: string }) => { const group = pageTabGroups.find((candidate) => candidate.tabs.some((tab) => isRouteMatch(route, tab.href))); if (!group) return null; return <nav className="workspace-tabs" aria-label={`${group.label} sections`}><span className="workspace-tabs-label">{group.label}</span><div>{group.tabs.map((tab) => <a className={isRouteMatch(route, tab.href) ? 'active' : ''} href={`#${tab.href}`} key={tab.href}>{tab.label}</a>)}</div></nav> }
 
 const Login = ({ onLogin }: { onLogin: (session: AuthSession) => void }) => { const [email, setEmail] = useState('ThomasEBryantIII@protonmail.com'); const [password, setPassword] = useState(''); const [error, setError] = useState(''); const submit = async (event: React.FormEvent) => { event.preventDefault(); setError(''); try { onLogin(await auth.login(email, password)) } catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to sign in.') } }; return <main className="login-page"><div className="login-mark">P<span>/</span>F</div><div className="login-card paper-stack"><p className="eyebrow">Personal budget system</p><h1>Welcome back.</h1><p className="muted">Enter the temporary access password to open your local-first budget workspace.</p><div className="alert warning"><b>Temporary access password</b><span><code>{auth.temporaryPassword}</code> · This public demo gate is intentionally temporary.</span></div><form onSubmit={submit}><label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="username" /></label><label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" /></label>{error && <div className="alert error">{error}</div>}<button className="button primary wide">Open budget <span>↗</span></button></form><small className="muted">Your budget edits stay in this browser’s local storage. Replace the temporary gate with server-side authentication before treating this as secure.</small></div></main> }
 
@@ -42,16 +58,16 @@ const AppShell = ({ session, snapshot, setSnapshot, onLogout }: { session: AuthS
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand"><span className="brand-mark">P<span>/</span>F</span><span>Paper-Fu<br /><b>Budget</b></span></div>
-      <div className="sidebar-section"><span className="eyebrow">Workspace</span>{nav.map((item) => <a className={route.startsWith(item.href) ? 'nav-link active' : 'nav-link'} href={`#${item.href}`} key={item.href}><Icon name={item.icon} /><span>{item.label}</span></a>)}</div>
+      {sidebarSections.map((section) => <div className="sidebar-section" key={section.label}><span className="eyebrow">{section.label}</span>{section.items.map((item) => <a className={item.matches.some((match) => isRouteMatch(route, match)) ? 'nav-link active' : 'nav-link'} href={`#${item.href}`} key={item.href}><Icon name={item.icon} /><span>{item.label}</span></a>)}</div>)}
       <div className="sidebar-foot">
         <div className="profile"><div className="avatar">{session.user.email.slice(0, 1).toUpperCase()}</div><div><b>{session.user.email}</b><small>authenticated</small></div></div>
         <button className="nav-link" onClick={onLogout}><Icon name="logout" /><span>Sign out</span></button>
       </div>
     </aside>
     <main className="main">
-      <header className="topbar"><div><span className="eyebrow">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span><h1>{route === '/dashboard' || route === '/' ? 'Your financial picture' : nav.find((item) => route.startsWith(item.href))?.label ?? 'Budget'}</h1></div><label className="scenario-select"><span>Scenario</span><select value={scenarioId} onChange={(event) => setScenarioId(event.target.value)}>{snapshot.scenarios.filter((scenario) => !scenario.archived).map((scenario) => <option key={scenario.id} value={scenario.id}>{scenario.name}</option>)}</select></label></header>
-      <div className="content">{page}</div>
-      <nav className="mobile-nav">{nav.filter((item) => ['/dashboard', '/budget', '/paychecks', '/income', '/savings', '/debts', '/bills', '/settings/taxes'].includes(item.href)).map((item) => <a className={route.startsWith(item.href) ? 'active' : ''} href={`#${item.href}`} key={item.href}><Icon name={item.icon} /><span>{item.label}</span></a>)}</nav>
+      <header className="topbar"><div><span className="eyebrow">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span><h1>{route === '/dashboard' || route === '/' ? 'Your financial picture' : activeTab(route)?.label ?? nav.find((item) => item.matches.some((match) => isRouteMatch(route, match)))?.label ?? 'Budget'}</h1></div><label className="scenario-select"><span>Scenario</span><select value={scenarioId} onChange={(event) => setScenarioId(event.target.value)}>{snapshot.scenarios.filter((scenario) => !scenario.archived).map((scenario) => <option key={scenario.id} value={scenario.id}>{scenario.name}</option>)}</select></label></header>
+      <div className="content"><PageTabs route={route} />{page}</div>
+      <nav className="mobile-nav">{[nav[0], nav[1], nav[2], { href: '/bills', label: 'Bills', icon: 'list', matches: ['/debts', '/bills'] }, nav[6]].map((item) => <a className={item.matches.some((match) => isRouteMatch(route, match)) || isRouteMatch(route, item.href) ? 'active' : ''} href={`#${item.href}`} key={`${item.href}-${item.label}`}><Icon name={item.icon} /><span>{item.label}</span></a>)}</nav>
     </main>
   </div>
 }
