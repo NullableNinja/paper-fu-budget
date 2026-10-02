@@ -4,7 +4,7 @@ import { frequencyToMonthly, formatCurrency, monthlyToPeriod, type BudgetPeriod 
 
 const kinds: Array<ItemKind | 'all'> = ['all', 'fixed', 'variable', 'debt', 'savings', 'discretionary']
 type OwnershipFilter = 'all' | 'shared' | 'individual'
-type CategoryOrder = 'alphabetical' | 'monthly' | 'ramsey'
+type CategoryOrder = 'spreadsheet' | 'alphabetical' | 'monthly' | 'ramsey'
 const linePeriods: Array<{ value: BudgetPeriod; label: string }> = [
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
@@ -29,6 +29,11 @@ const ramseyPriority = [
   ['entertainment'],
   ['misc'],
 ]
+const spreadsheetCategoryOrder = ['Savings', 'Housing & Utilities', 'Transportation', 'Food', 'Dependent Care', 'Medical', 'Personal Care', 'Personal Wellness', 'Entertainment', 'Misc Expenses', 'Loans', 'Student Loans', 'Credit Cards']
+const spreadsheetRank = (category: string) => {
+  const index = spreadsheetCategoryOrder.findIndex((candidate) => candidate.toLowerCase() === category.toLowerCase())
+  return index === -1 ? spreadsheetCategoryOrder.length : index
+}
 const ramseyRank = (category: string) => {
   const normalized = category.toLowerCase()
   const index = ramseyPriority.findIndex((terms) => terms.some((term) => normalized.includes(term)))
@@ -43,7 +48,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
   const [tag, setTag] = useState('all')
   const [showInactive, setShowInactive] = useState(false)
   const [showSharedDetails, setShowSharedDetails] = useState(true)
-  const [categoryOrder, setCategoryOrder] = useState<CategoryOrder>('alphabetical')
+  const [categoryOrder, setCategoryOrder] = useState<CategoryOrder>('spreadsheet')
   const categories = useMemo(() => Array.from(new Set(items.map((item) => item.category))).sort(), [items])
   const tags = useMemo(() => Array.from(new Set(items.flatMap((item) => item.tags ?? []))).sort(), [items])
   const sharedCount = items.filter((item) => item.shared && item.active).length
@@ -60,6 +65,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
       items: filtered.filter((item) => item.category === group),
     }))
     return groups.sort((a, b) => {
+      if (categoryOrder === 'spreadsheet') return spreadsheetRank(a.category) - spreadsheetRank(b.category) || a.category.localeCompare(b.category)
       if (categoryOrder === 'monthly') {
         const aTotal = a.items.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0)
         const bTotal = b.items.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0)
@@ -80,7 +86,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
       <select aria-label="Filter by ownership" value={ownership} onChange={(event) => setOwnership(event.target.value as OwnershipFilter)}><option value="all">All ownership</option><option value="shared">Shared only</option><option value="individual">My expenses</option></select>
       <select aria-label="Filter by tag" value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">All tags</option>{tags.map((value) => <option key={value} value={value}>{value}</option>)}</select>
     </div>
-    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>{sharedCount ? `${sharedCount} shared · amounts shown are your share` : 'Mark split bills as shared in the editor'}</span><label className="line-sort-control">Category order<select aria-label="Category order" value={categoryOrder} onChange={(event) => setCategoryOrder(event.target.value as CategoryOrder)}><option value="alphabetical">Alphabetical</option><option value="monthly">Largest monthly first</option><option value="ramsey">Ramsey priority</option></select></label><label className="check-row"><input type="checkbox" checked={showSharedDetails} onChange={(event) => setShowSharedDetails(event.target.checked)} /> Show shared details</label><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label>{categoryOrder === 'ramsey' && <span className="sort-note">Essentials → debt → savings → discretionary</span>}</div>
+    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>{sharedCount ? `${sharedCount} shared · amounts shown are your share` : 'Mark split bills as shared in the editor'}</span><label className="line-sort-control">Category order<select aria-label="Category order" value={categoryOrder} onChange={(event) => setCategoryOrder(event.target.value as CategoryOrder)}><option value="spreadsheet">Spreadsheet order</option><option value="alphabetical">Alphabetical</option><option value="monthly">Largest monthly first</option><option value="ramsey">Ramsey priority</option></select></label><label className="check-row"><input type="checkbox" checked={showSharedDetails} onChange={(event) => setShowSharedDetails(event.target.checked)} /> Show shared details</label><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label>{categoryOrder === 'ramsey' && <span className="sort-note">Essentials → debt → savings → discretionary</span>}{categoryOrder === 'spreadsheet' && <span className="sort-note">Matches your workbook layout</span>}</div>
     <div className="line-table-head global-line-head"><span>Line item</span><span>Due</span><span>Type</span><span>Frequency</span>{linePeriods.map((period) => <span key={period.value}>{period.label}</span>)}<span>Status</span></div>
     <div className="line-table-body">{grouped.map(({ category: group, items: groupItems }) => <section className="line-category" key={group}>
       <div className="line-category-head"><div><span className="eyebrow">Category</span><h3>{group}</h3></div><span>{groupItems.filter((item) => item.active).length} active lines</span></div>
