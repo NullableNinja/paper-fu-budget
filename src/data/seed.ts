@@ -1,4 +1,4 @@
-import type { AppSnapshot, BudgetItem, BudgetScenario, DebtRecord, IncomeSource, ItemKind } from '../models'
+import type { AppSnapshot, BudgetItem, BudgetScenario, DebtRecord, IncomeSource, ItemKind, PaycheckModel } from '../models'
 import { defaultTaxProfile } from '../calculations/taxes'
 
 const now = '2026-10-02T00:00:00.000Z'
@@ -34,7 +34,9 @@ const makeItems = (amounts: Record<string, number>, names: Record<string, string
   return sharedItemIds.has(source.id) ? { ...next, shared: true, sharedSharePercent: 50 } : next
 })
 
-const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, memberId: 'thomas', payType: 'salary', annualSalary: salary, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }, { id: 'second-job', name: 'Second Job', memberId: 'thomas', payType: 'hourly', hourlyRate: 0, regularHoursPerWeek: 0, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: false, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }]
+const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, payType: 'salary', payFrequency: 'biweekly', annualSalary: salary, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }, { id: 'second-job', name: 'Second Job', payType: 'hourly', payFrequency: 'weekly', hourlyRate: 0, regularHoursPerWeek: 0, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: false, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }]
+
+const workbookPaycheckModel: PaycheckModel = { grossPayPerPaycheck: 4807.692307692308, paychecksPerYear: 26, retirement401kPerPaycheck: 432.6923076923077, fsaMedicalPerPaycheck: 46.15, criticalIllnessPerPaycheck: 7.26, healthPremiumPerPaycheck: 241.44, otherPreTaxBenefitsPerPaycheck: 0, postTaxDeductionsPerPaycheck: 23.47 }
 
 const debtRecords: DebtRecord[] = [
   { id: 'mortgage-debt', debtor: 'Altra Federal Credit Union', description: '1st Mortgage | 1230 Redfield St', minimumMonthly: 1218.59, dueDay: 1, balance: 151948.06 },
@@ -44,15 +46,15 @@ const debtRecords: DebtRecord[] = [
   { id: 'medical-debt', debtor: 'Gundersen Health System', description: 'Primary Account', minimumMonthly: 300, balance: 4682.83 },
 ]
 
-const scenario = (id: string, name: string, description: string, salary: number, annualNet: number, amounts: Record<string, number>, incomeName = 'Potential New Job', names: Record<string, string> = {}): BudgetScenario => ({
-  id, name, description, salary, annualNet, paychecksPerYear: 26, incomeSources: incomes(salary, annualNet, incomeName), householdMembers: [{ id: 'thomas', name: 'Thomas' }, { id: 'vicki', name: 'Vicki' }], items: makeItems(amounts, names), debts: debtRecords, taxProfile: defaultTaxProfile(salary), createdAt: now,
+const scenario = (id: string, name: string, description: string, salary: number, annualNet: number, amounts: Record<string, number>, incomeName = 'Potential New Job', names: Record<string, string> = {}, paycheckModel?: PaycheckModel): BudgetScenario => ({
+  id, name, description, salary, annualNet, paychecksPerYear: paycheckModel?.paychecksPerYear ?? 26, incomeSources: incomes(salary, annualNet, incomeName), paycheckModel, items: makeItems(amounts, names), debts: debtRecords, taxProfile: defaultTaxProfile(salary), createdAt: now,
 })
 
 export const initialSnapshot: AppSnapshot = {
   schemaVersion: 2,
   settings: { defaultScenarioId: 'salary-125k', currency: 'USD', weekStartsOn: 'sunday', theme: { mode: 'light', navColor: '#f1ecdf', backgroundColor: '#f4efe4', accentColor: '#e17a62', backgroundStyle: 'paper', reduceMotion: false } },
   scenarios: [
-    scenario('salary-125k', '$125K Projected', 'Primary projected salary scenario from Northern Trust workbook.', 125000, 77200.521546, { vacation: 50, concert: 50, emergency: 100, 'home-repair': 50, 'general-savings': 100, birthday: 50, 'chapter-13': 1278 }),
+    scenario('salary-125k', '$125K Projected', 'Primary projected salary scenario from Northern Trust workbook.', 125000, 77200.521546, { vacation: 50, concert: 50, emergency: 100, 'home-repair': 50, 'general-savings': 100, birthday: 50, 'chapter-13': 1278 }, 'Potential New Job', {}, workbookPaycheckModel),
     scenario('kt-only', 'KT Only', 'Current financial state using the Kwik Trip payroll model.', 82000, 52291.378346, { vacation: 0, concert: 0, emergency: 75, 'home-repair': 0, 'general-savings': 75, birthday: 75, xcel: 218, brightspeed: 20, mobile: 135.06, orkin: 19.69, water: 36.67, 'rent-fund': 0, storage: 0, vehicle: 0, gas: 200, groceries: 400, 'field-trips': 25, 'school-supplies': 15, 'cat-food': 0, 'pet-vet': 0, reptile: 20, prescriptions: 30, vision: 12.5, household: 50, clothing: 0, sirius: 0, netflix: 0, prime: 10.75, disney: 34.8, 'date-money': 100, 'green-money': 100, 'personal-spend': 200, office: 8.79, proton: 10, 'chapter-13': 527.995, 'student-loan': 0 }, 'Kwik Trip'),
     scenario('salary-100k', '$100K Projected', 'Lower projected salary sensitivity case.', 100000, 62718.461546, { vacation: 75, concert: 75, emergency: 100, 'home-repair': 75, 'general-savings': 100, birthday: 75, xcel: 235, brightspeed: 39.99, mobile: 150, orkin: 40, water: 75, 'rent-fund': 750, storage: 0, vehicle: 0, gas: 225, groceries: 400, 'field-trips': 25, 'school-supplies': 15, 'cat-food': 50, 'pet-vet': 0, reptile: 20, prescriptions: 30, household: 50, clothing: 0, sirius: 11.99, netflix: 0, 'date-money': 75, 'green-money': 75, 'personal-spend': 216.66, 'chapter-13': 527.995, 'student-loan': 0 }, 'Potential New Job', { mobile: 'T-Mobile', proton: 'Proton Security' }),
     scenario('salary-140k', '$140K Projected', 'Higher projected salary sensitivity case.', 140000, 85889.757546, { vacation: 75, concert: 75, emergency: 125, 'home-repair': 75, 'general-savings': 125, birthday: 75, xcel: 250, brightspeed: 39.99, mobile: 162.5, orkin: 40, water: 75, 'rent-fund': 750, storage: 75, gas: 250, groceries: 450, 'field-trips': 25, 'school-supplies': 15, 'cat-food': 60, 'pet-vet': 50, reptile: 20, prescriptions: 50, household: 75, clothing: 50, ymca: 60, netflix: 10.54, 'date-money': 100, 'green-money': 100, 'personal-spend': 325, 'chapter-13': 527.995, 'student-loan': 850 }, 'Potential New Job'),

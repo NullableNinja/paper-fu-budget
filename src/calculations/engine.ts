@@ -41,7 +41,7 @@ export const periodLabel = (period: BudgetPeriod) => budgetPeriods.find((candida
 export const calculateScenario = (scenario: BudgetScenario): ScenarioTotals => {
   const active = scenario.items.filter((candidate) => candidate.active)
   const taxEstimate = calculateW2Taxes(scenario)
-  const annualIncome = taxEstimate.annualNet
+  const annualIncome = taxEstimate.primaryAnnualNet
   const monthlyIncome = annualIncome / 12
   const monthlyByKind = (kind: string) => active.filter((candidate) => candidate.kind === kind).reduce((sum, candidate) => sum + frequencyToMonthly(candidate.amountMonthly, candidate.frequency), 0)
   const savings = monthlyByKind('savings')

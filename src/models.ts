@@ -52,14 +52,10 @@ export interface BudgetItem {
   paidAt?: string
 }
 
-export interface HouseholdMember {
-  id: string
-  name: string
-}
-
 export interface OvertimeSettings {
   enabled: boolean
-  hoursPerYear: number
+  hoursPerPayPeriod?: number
+  hoursPerYear?: number
   multiplier: number
   explicitHourlyRate?: number
   standardHoursPerYear?: number
@@ -68,18 +64,29 @@ export interface OvertimeSettings {
 export interface IncomeSource {
   id: string
   name: string
-  memberId?: string
   payType?: 'salary' | 'hourly'
   annualSalary?: number
   hourlyRate?: number
   regularHoursPerWeek?: number
   paidWeeksPerYear?: number
   payFrequency?: Frequency
+  payPeriodsPerYear?: number
   overtime?: OvertimeSettings
   annualGross: number
   annualNet: number
   netRetention: number
   active: boolean
+}
+
+export interface PaycheckModel {
+  grossPayPerPaycheck: number
+  paychecksPerYear: number
+  retirement401kPerPaycheck: number
+  fsaMedicalPerPaycheck: number
+  criticalIllnessPerPaycheck: number
+  healthPremiumPerPaycheck: number
+  otherPreTaxBenefitsPerPaycheck: number
+  postTaxDeductionsPerPaycheck: number
 }
 
 export interface DebtPayment {
@@ -107,7 +114,7 @@ export interface BudgetScenario {
   annualNet: number
   paychecksPerYear: number
   incomeSources: IncomeSource[]
-  householdMembers?: HouseholdMember[]
+  paycheckModel?: PaycheckModel
   items: BudgetItem[]
   debts: DebtRecord[]
   taxProfile: W2TaxProfile

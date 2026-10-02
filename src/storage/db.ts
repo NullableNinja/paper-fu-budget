@@ -1,4 +1,4 @@
-import type { AppSnapshot, IncomeSource } from '../models'
+import type { AppSnapshot, BudgetScenario, IncomeSource } from '../models'
 import { initialSnapshot } from '../data/seed'
 import { defaultTaxProfile } from '../calculations/taxes'
 import { defaultTheme } from '../app/theme'
@@ -20,17 +20,14 @@ export const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({
       const withWorkbookContext = item.shared === undefined && seeded?.shared ? { ...item, shared: true, sharedSharePercent: seeded.sharedSharePercent } : item
       return scenario.id === 'salary-125k' && withWorkbookContext.id === 'chapter-13' && withWorkbookContext.amountMonthly === 527.995 ? { ...withWorkbookContext, amountMonthly: 1278, active: true } : withWorkbookContext
     })
-    const sources = scenario.incomeSources.map((source, index): IncomeSource => ({
-      ...source,
-      memberId: source.memberId ?? (index === 0 || source.id === 'primary-income' ? 'thomas' : 'thomas'),
-      payType: source.payType ?? 'salary',
-      annualSalary: source.annualSalary ?? source.annualGross,
-      overtime: source.overtime ?? { enabled: false, hoursPerYear: 0, multiplier: 1.5 },
-    }))
-    const hasVickiSource = sources.some((source) => source.memberId === 'vicki')
-    const spouseWages = scenario.taxProfile?.spouseWages ?? 0
-    if (!hasVickiSource && spouseWages > 0) sources.push({ id: `income-vicki-${scenario.id}`, name: 'Vicki primary job', memberId: 'vicki', payType: 'salary', annualSalary: spouseWages, annualGross: spouseWages, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } })
-    return { ...scenario, items, incomeSources: sources, householdMembers: scenario.householdMembers ?? [{ id: 'thomas', name: 'Thomas' }, { id: 'vicki', name: 'Vicki' }], taxProfile: scenario.taxProfile ? { ...scenario.taxProfile, spouseWages: 0 } : defaultTaxProfile(scenario.salary) }
+    const sources = scenario.incomeSources.map((source): IncomeSource => {
+      const { memberId: _memberId, ...withoutMember } = source as IncomeSource & { memberId?: string }
+      const payFrequency = source.payFrequency ?? (source.payType === 'hourly' ? 'weekly' : 'biweekly')
+      const periods = payFrequency === 'weekly' ? 52 : payFrequency === 'biweekly' ? 26 : payFrequency === 'semimonthly' ? 24 : payFrequency === 'monthly' ? 12 : payFrequency === 'annual' ? 1 : 26
+      return { ...withoutMember, payType: source.payType ?? 'salary', payFrequency, annualSalary: source.annualSalary ?? source.annualGross, overtime: source.overtime ? { ...source.overtime, hoursPerPayPeriod: source.overtime.hoursPerPayPeriod ?? (source.overtime.hoursPerYear ?? 0) / periods } : { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }
+    })
+    const { householdMembers: _householdMembers, ...withoutHouseholdMembers } = scenario as BudgetScenario & { householdMembers?: unknown }
+    return { ...withoutHouseholdMembers, items, incomeSources: sources, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) }
   }),
 })
 

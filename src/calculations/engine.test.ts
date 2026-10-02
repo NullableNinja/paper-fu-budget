@@ -29,6 +29,10 @@ describe('budget calculation engine', () => {
   it('matches the Northern Trust 125K workbook reconciliation', () => {
     const scenario = initialSnapshot.scenarios[0]
     const totals = calculateScenario(scenario)
+    const taxes = calculateW2Taxes(scenario)
+    expect(taxes.primaryGrossWages).toBeCloseTo(125000, 6)
+    expect(taxes.retirement401k).toBeCloseTo(11250, 6)
+    expect(taxes.postTaxDeductions).toBeCloseTo(610.22, 6)
     expect(totals.monthlyIncome).toBeCloseTo(6433.3767955, 6)
     expect(totals.totalOutflow).toBeCloseTo(6415.4725, 6)
     expect(totals.monthlySurplus).toBeCloseTo(17.9042955, 4)
@@ -55,6 +59,7 @@ describe('budget calculation engine', () => {
 
   it('handles FICA limits and additional Medicare', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
+    scenario.paycheckModel = undefined
     scenario.salary = 250000
     scenario.incomeSources[0].annualSalary = 250000
     scenario.incomeSources[0].annualGross = 250000
@@ -64,30 +69,39 @@ describe('budget calculation engine', () => {
   })
 
   it('annualizes hourly income and overtime', () => {
-    const source = { id: 'hourly', name: 'Second job', payType: 'hourly' as const, hourlyRate: 20, regularHoursPerWeek: 10, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerYear: 20, multiplier: 1.5 } }
-    expect(annualGrossForSource(source)).toBeCloseTo(11000)
+    const source = { id: 'hourly', name: 'Second job', payType: 'hourly' as const, payFrequency: 'weekly' as const, hourlyRate: 20, regularHoursPerWeek: 10, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerPayPeriod: 1, multiplier: 1.5 } }
+    expect(annualGrossForSource(source)).toBeCloseTo(11960)
   })
 
-  it('adds overtime to a salaried source', () => {
-    const source = { id: 'salary', name: 'Vicki', payType: 'salary' as const, annualSalary: 80000, annualGross: 80000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerYear: 100, multiplier: 1.5 } }
-    expect(annualGrossForSource(source)).toBeCloseTo(85769.2308, 3)
+  it('adds per-pay-period overtime to a salaried source', () => {
+    const source = { id: 'salary', name: 'Salary job', payType: 'salary' as const, payFrequency: 'biweekly' as const, annualSalary: 80000, annualGross: 80000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerPayPeriod: 10, multiplier: 1.5 } }
+    expect(annualGrossForSource(source)).toBeCloseTo(95000, 3)
   })
 
   it('calculates a source-level marginal net contribution', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
-    const source = { id: 'vicki-job', name: 'Vicki', memberId: 'vicki', payType: 'salary' as const, annualSalary: 50000, annualGross: 50000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }
+    const source = { id: 'income-source', name: 'Another job', payType: 'salary' as const, annualSalary: 50000, annualGross: 50000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }
     const withSource = { ...scenario, incomeSources: [...scenario.incomeSources, source] }
     expect(calculateSourceNetContribution(withSource, source.id)).toBeGreaterThan(0)
   })
 
-  it('treats spouse wages as household income instead of charging joint taxes to one paycheck', () => {
+  it('models every active income source as one person\'s wages', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
-    scenario.taxProfile = { ...scenario.taxProfile, filingStatus: 'mfj', qualifyingChildren: 1 }
-    scenario.incomeSources.push({ id: 'vicki-job', name: 'Vicki', memberId: 'vicki', payType: 'salary', annualSalary: 57235.1, annualGross: 57235.1, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } })
+    scenario.incomeSources.push({ id: 'income-source', name: 'Another job', payType: 'salary', annualSalary: 57235.1, annualGross: 57235.1, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } })
     const estimate = calculateW2Taxes(scenario)
-    expect(estimate.primaryGrossWages).toBeCloseTo(125000)
-    expect(estimate.spouseGrossWages).toBeCloseTo(57235.1)
     expect(estimate.grossWages).toBeCloseTo(182235.1)
     expect(estimate.annualNet).toBeGreaterThan(100000)
+  })
+
+  it('keeps spouse wages tax-only and out of the personal budget', () => {
+    const scenario = structuredClone(initialSnapshot.scenarios[0])
+    scenario.taxProfile = { ...scenario.taxProfile, filingStatus: 'mfj', spouseWages: 57235.1, qualifyingChildren: 1 }
+    const estimate = calculateW2Taxes(scenario)
+    const totals = calculateScenario(scenario)
+    expect(estimate.grossWages).toBeCloseTo(182235.1)
+    expect(estimate.primaryGrossWages).toBeCloseTo(125000)
+    expect(estimate.spouseGrossWages).toBeCloseTo(57235.1)
+    expect(totals.monthlyIncome).toBeCloseTo(estimate.primaryAnnualNet / 12)
+    expect(totals.monthlyIncome).toBeLessThan(estimate.annualNet / 12)
   })
 })
