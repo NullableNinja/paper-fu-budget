@@ -616,3 +616,23 @@
 .theme-root .line-cumulative-row small{margin-top:0;color:var(--muted);font:10px/1.2 Tahoma,Arial,"Segoe UI",sans-serif!important}
 .theme-root .line-subtotal-row .line-amount,
 .theme-root .line-cumulative-row .line-amount{font:700 14px/1.25 Tahoma,Arial,"Segoe UI",sans-serif!important;font-variant-numeric:tabular-nums lining-nums}
+
+/* Workbook-style summary rows live below—not inside—the bordered category
+   table. The pale blue surface makes that boundary explicit. */
+.theme-root .line-category-group{margin:16px 0 0}
+.theme-root .line-category-group:first-child{margin-top:14px}
+.theme-root .line-category-group>.line-category{margin:0!important}
+.theme-root .line-category-totals{
+  display:grid;
+  gap:4px;
+  margin:6px 0 16px;
+  --workbook-total-bg:color-mix(in srgb,#b9d9e7 48%,var(--paper));
+}
+.theme-root .line-category-totals .line-subtotal-row,
+.theme-root .line-category-totals .line-cumulative-row{
+  margin:0!important;
+  border:1px solid color-mix(in srgb,#86aebb 58%,var(--line))!important;
+  border-left:3px solid #86aebb!important;
+  border-radius:0!important;
+  background:var(--workbook-total-bg)!important;
+}
