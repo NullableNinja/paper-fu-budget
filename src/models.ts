@@ -39,6 +39,7 @@ export interface BudgetItem {
   amountMonthly: number
   frequency: Frequency
   dueDay?: number
+  dueUponReceipt?: boolean
   accountNickname?: string
   url?: string
   autoPay?: boolean

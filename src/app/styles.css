@@ -232,4 +232,61 @@
 .bill-table-row.bill-late,.bill-row.bill-late{background:color-mix(in srgb,var(--negative) 10%,transparent);box-shadow:inset 3px 0 0 var(--negative)}.bill-table-row.bill-paid,.bill-row.bill-paid{opacity:.68}.bill-table-row.bill-paid .date-badge{filter:saturate(.55)}.bill-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.bill-status{font:600 10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em}.bill-status.negative{color:var(--negative)!important}.bill-status.positive{color:var(--positive)!important}
 .tag-list{display:flex;gap:4px;flex-wrap:wrap}.tag-badge{width:max-content;color:var(--muted);border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 70%,var(--page-bg));padding:2px 5px;border-radius:3px;font:9px 'DM Mono',monospace}.note-indicator{font-style:italic}
 .debt-payment-entry{display:grid;gap:10px;border-left:3px solid var(--accent);padding:12px;background:color-mix(in srgb,var(--accent) 8%,var(--paper))}.debt-payment-entry .eyebrow{color:var(--accent)}.debt-balance-preview{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.debt-balance-preview strong{font:600 16px 'DM Mono',monospace;color:var(--ink)}
+.theme-root .button.danger{color:var(--negative);border-color:var(--negative);background:color-mix(in srgb,var(--negative) 8%,var(--paper))}
+.theme-root .button.danger:hover{background:color-mix(in srgb,var(--negative) 16%,var(--paper));box-shadow:3px 3px 0 var(--negative)}
+.theme-root .due-date-help{align-self:end;padding:0 2px 11px;line-height:1.4}
 @media (max-width:700px){.bill-actions{justify-content:flex-start}.bill-status{width:100%}.profile-copy b{max-width:190px}}
+
+/* Ledger alignment: one fixed track system for headings, rows, and subtotals. */
+.theme-root .global-line-head{display:none}
+.theme-root .line-table-head,
+.theme-root .line-table-row,
+.theme-root .line-subtotal-row{
+  grid-template-columns:minmax(270px,2fr) 88px 78px 88px repeat(5,minmax(76px,1fr)) 82px;
+  gap:0;
+}
+.theme-root .line-category-columns{
+  display:grid;
+  padding:9px 4px 8px;
+  background:color-mix(in srgb,var(--ink) 4%,transparent);
+  border-bottom:1px solid var(--line);
+}
+.theme-root .line-table-head>span:not(:first-child),
+.theme-root .line-table-row>span:not(:first-child),
+.theme-root .line-subtotal-row>span:not(:first-child){
+  border-left:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  padding-left:10px;
+}
+.theme-root .line-table-head>span:not(:first-child),
+.theme-root .line-subtotal-row>span:not(:first-child){
+  min-width:0;
+}
+.theme-root .line-table-row>span:not(:first-child),
+.theme-root .line-subtotal-row>span:not(:first-child){
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.theme-root .line-name{display:block;font-size:13px;font-weight:500;line-height:1.25}
+.theme-root .line-item-copy{min-width:0}
+.theme-root .line-due{font:10px 'DM Mono',monospace;color:var(--muted);white-space:nowrap}
+.theme-root .late-label{color:var(--negative);font-weight:700}
+.theme-root .line-subtotal-row{font-size:12px;font-weight:700;padding:12px 4px;background:color-mix(in srgb,var(--positive) 10%,transparent)}
+.theme-root .line-subtotal-row b{font-size:13px;font-weight:700}
+.theme-root .line-subtotal-row .line-amount{font-size:12px;font-weight:700}
+.theme-root .line-subtotal-row>span:last-child{text-align:left}
+
+@media (max-width:700px){
+  .theme-root .global-line-head{display:none}
+  .theme-root .line-items{overflow-x:auto}
+  .theme-root .line-table-body{min-width:1140px}
+  .theme-root .line-table-head,
+  .theme-root .line-table-row,
+  .theme-root .line-subtotal-row{grid-template-columns:270px 88px 78px 88px repeat(5,78px) 82px}
+  .theme-root .line-category-columns{display:grid}
+  .theme-root .line-table-row>span:nth-child(2),
+  .theme-root .line-table-row>span:nth-child(3){display:block}
+  .theme-root .line-table-row strong{grid-column:auto;grid-row:auto}
+  .theme-root .line-table-row>span:last-child{grid-column:auto;grid-row:auto;text-align:left}
+}

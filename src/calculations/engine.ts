@@ -1,7 +1,7 @@
 import type { BudgetScenario, Frequency, ScenarioTotals } from '../models'
 import { calculateW2Taxes } from './taxes'
 
-export type BudgetPeriod = 'weekly' | 'biweekly' | 'monthly' | 'annual'
+export type BudgetPeriod = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'annual'
 export const budgetPeriods: Array<{ value: BudgetPeriod; label: string; shortLabel: string }> = [
   { value: 'weekly', label: 'Weekly', shortLabel: 'Wk' },
   { value: 'biweekly', label: 'Bi-weekly', shortLabel: 'Bi-wk' },
@@ -21,6 +21,7 @@ export const frequencyToMonthly = (amount: number, frequency: Frequency): number
 }
 
 export const monthlyToPeriod = (monthly: number, period: BudgetPeriod, paychecksPerYear = 26): number => {
+  if (period === 'daily') return monthly * 12 / 365
   if (period === 'weekly') return monthly * 12 / 52
   if (period === 'biweekly') return monthly * 12 / paychecksPerYear
   if (period === 'annual') return monthly * 12
@@ -28,6 +29,7 @@ export const monthlyToPeriod = (monthly: number, period: BudgetPeriod, paychecks
 }
 
 export const annualToPeriod = (annual: number, period: BudgetPeriod, paychecksPerYear = 26): number => {
+  if (period === 'daily') return annual / 365
   if (period === 'weekly') return annual / 52
   if (period === 'biweekly') return annual / paychecksPerYear
   if (period === 'monthly') return annual / 12
