@@ -668,3 +668,49 @@
 .income-row{grid-template-columns:repeat(4,minmax(150px,1fr))}
 @media (max-width:900px){.income-row{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.income-row{grid-template-columns:1fr}}
+
+.theme-root .income-adjustment-list{display:grid;gap:0}
+.theme-root .income-adjustment-row{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) minmax(280px,420px);
+  gap:18px;
+  align-items:center;
+  border-top:1px solid var(--line);
+  padding:14px 0;
+}
+.theme-root .income-adjustment-row:nth-child(even){background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.theme-root .income-adjustment-row b,
+.theme-root .income-adjustment-row small{display:block}
+.theme-root .income-adjustment-row b{font-size:14px}
+.theme-root .income-adjustment-row small{margin-top:4px;color:var(--muted);font:10px 'DM Mono',monospace;text-transform:uppercase}
+.theme-root .income-adjustment-row label{display:grid;gap:6px;font-size:11px;font-weight:600}
+.theme-root .income-inline-field{display:flex;align-items:center;gap:7px}
+.theme-root .income-inline-field input{min-width:0;max-width:110px}
+.theme-root .income-inline-field span{color:var(--muted);font:11px 'DM Mono',monospace}
+.theme-root .income-inline-field .button{white-space:nowrap}
+@media (max-width:700px){
+  .theme-root .income-adjustment-row{grid-template-columns:1fr;gap:10px}
+  .theme-root .income-adjustment-row .income-inline-field{max-width:100%}
+}
+
+/* Paycheck model worksheet layout */
+.paycheck-model-page{max-width:1110px;margin:0 auto;padding:28px;grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr);align-items:start;border:1px solid color-mix(in srgb,var(--ink) 24%,var(--line));border-radius:22px;background:color-mix(in srgb,var(--paper) 74%,var(--page-bg));box-shadow:8px 8px 0 color-mix(in srgb,var(--shadow-color) 18%,transparent)}
+.paycheck-model-page>.page-intro{grid-column:1/-1}
+.paycheck-model-page>.paycheck-inputs{grid-column:1;grid-row:2}
+.paycheck-model-page>.paycheck-kpis{grid-column:2;grid-row:2;display:grid;grid-template-columns:1fr;gap:12px;align-content:start}
+.paycheck-model-page>.paycheck-tax-panel{grid-column:1/-1}
+.paycheck-model-page>.paycheck-reconciliation{grid-column:1/-1}
+.paycheck-model-page>.paycheck-inputs,.paycheck-model-page>.paycheck-tax-panel,.paycheck-model-page>.paycheck-reconciliation{border-radius:18px}
+.paycheck-model-page .paycheck-inputs .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.paycheck-model-page .paycheck-inputs .button{min-width:150px}
+@media (max-width:900px){
+  .paycheck-model-page{padding:18px;grid-template-columns:1fr}
+  .paycheck-model-page>.paycheck-inputs,
+  .paycheck-model-page>.paycheck-kpis,
+  .paycheck-model-page>.paycheck-tax-panel,
+  .paycheck-model-page>.paycheck-reconciliation{grid-column:1;grid-row:auto}
+  .paycheck-model-page>.paycheck-kpis{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:520px){.paycheck-model-page>.paycheck-kpis{grid-template-columns:1fr}}
+
+.income-actions{position:relative;align-self:center}.income-actions summary{list-style:none;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;border:1.5px solid var(--ink);font:700 20px/1 'DM Mono',monospace}.income-actions summary::-webkit-details-marker{display:none}.income-actions summary:hover{background:var(--ink);color:var(--paper)}.income-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:4;min-width:110px;padding:6px;background:var(--paper);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}.income-menu .button{width:100%;justify-content:flex-start}

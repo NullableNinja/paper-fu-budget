@@ -11,7 +11,7 @@ import { BarChart } from '../components/BarChart'
 import { Sheet } from '../components/Sheet'
 import { BudgetLineEditor } from '../components/BudgetLineEditor'
 import { LineItemTable } from '../components/LineItemTable'
-import { BudgetWorkspacePage, DashboardV2, DebtsPage, IncomePage, PaycheckModelPage, SavingsPage, ScenarioWorkspacePage } from './WorkspacePages'
+import { BudgetWorkspacePage, DashboardV2, DebtsPage, IncomePage, PaycheckModelPage, SavingsPage } from './WorkspacePages'
 import { navigate, useHashRoute } from './useHashRoute'
 import './styles.css'
 import { ThemeRoot, defaultTheme, normalizeTheme, themePresets, type ThemeConfig, type ThemeBackground } from './theme'
@@ -21,11 +21,10 @@ const nav = [
   { href: '/budget', label: 'All line items', icon: 'wallet', matches: ['/budget'] },
   { href: '/paychecks', label: 'Plan', icon: 'chart', matches: ['/paychecks', '/paycheck-model', '/income', '/savings'] },
   { href: '/bills', label: 'Commitments', icon: 'list', matches: ['/debts', '/bills'] },
-  { href: '/scenarios', label: 'Scenarios', icon: 'copy', matches: ['/scenarios'] },
   { href: '/settings/taxes', label: 'Tax profile', icon: 'chart', matches: ['/settings/taxes'] },
   { href: '/settings', label: 'Settings', icon: 'settings', matches: ['/settings'] },
 ]
-const sidebarSections = [{ label: 'Workspace', items: nav.slice(0, 2) }, { label: 'Planning', items: nav.slice(2, 5) }, { label: 'Setup', items: nav.slice(5) }]
+const sidebarSections = [{ label: 'Workspace', items: nav.slice(0, 2) }, { label: 'Planning', items: nav.slice(2, 4) }, { label: 'Setup', items: nav.slice(4) }]
 const pageTabGroups = [
   { label: 'Plan', tabs: [{ href: '/paychecks', label: 'Paycheck plan' }, { href: '/paycheck-model', label: 'Paycheck model' }, { href: '/income', label: 'Income' }, { href: '/savings', label: 'Savings' }] },
   { label: 'Commitments', tabs: [{ href: '/debts', label: 'Debts' }, { href: '/bills', label: 'Bills' }] },
@@ -54,7 +53,10 @@ const AppShell = ({ session, snapshot, setSnapshot, onLogout }: { session: AuthS
   useEffect(() => {
     if (!snapshot.scenarios.some((scenario) => scenario.id === scenarioId)) setScenarioId(snapshot.settings.defaultScenarioId)
   }, [scenarioId, snapshot.scenarios, snapshot.settings.defaultScenarioId])
-  const page = route.startsWith('/budget') ? <BudgetWorkspacePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/paycheck-model') ? <PaycheckModelPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/paychecks') ? <PaychecksPage scenario={active} /> : route.startsWith('/income') ? <IncomePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/savings') ? <SavingsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/debts') ? <DebtsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/bills') ? <BillsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/scenarios') ? <ScenarioWorkspacePage snapshot={snapshot} active={active} setSnapshot={setSnapshot} setScenarioId={setScenarioId} /> : route.startsWith('/settings/taxes') ? <TaxProfilePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/settings') ? <SettingsPage snapshot={snapshot} setSnapshot={setSnapshot} session={session} theme={theme} onThemeChange={updateTheme} /> : <DashboardV2 scenario={active} onUpdate={updateScenario} />
+  useEffect(() => {
+    if (route.startsWith('/scenarios')) navigate('/income')
+  }, [route])
+  const page = route.startsWith('/budget') ? <BudgetWorkspacePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/paycheck-model') ? <PaycheckModelPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/paychecks') ? <PaychecksPage scenario={active} /> : route.startsWith('/income') ? <IncomePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/savings') ? <SavingsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/debts') ? <DebtsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/bills') ? <BillsPage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/settings/taxes') ? <TaxProfilePage scenario={active} onUpdate={updateScenario} /> : route.startsWith('/settings') ? <SettingsPage snapshot={snapshot} setSnapshot={setSnapshot} session={session} theme={theme} onThemeChange={updateTheme} /> : <DashboardV2 scenario={active} onUpdate={updateScenario} />
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand"><span className="brand-mark">P<span>/</span>F</span><span>Paper-Fu<br /><b>Budget</b></span></div>
@@ -67,7 +69,7 @@ const AppShell = ({ session, snapshot, setSnapshot, onLogout }: { session: AuthS
     <main className="main">
       <header className="topbar"><div><span className="eyebrow">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span><h1>{route === '/dashboard' || route === '/' ? 'Your financial picture' : activeTab(route)?.label ?? nav.find((item) => item.matches.some((match) => isRouteMatch(route, match)))?.label ?? 'Budget'}</h1></div><label className="scenario-select"><span>Scenario</span><select value={scenarioId} onChange={(event) => setScenarioId(event.target.value)}>{snapshot.scenarios.filter((scenario) => !scenario.archived).map((scenario) => <option key={scenario.id} value={scenario.id}>{scenario.name}</option>)}</select></label></header>
       <div className="content"><PageTabs route={route} />{page}</div>
-      <nav className="mobile-nav">{[nav[0], nav[1], nav[2], { href: '/bills', label: 'Bills', icon: 'list', matches: ['/debts', '/bills'] }, nav[6]].map((item) => <a className={item.matches.some((match) => isRouteMatch(route, match)) || isRouteMatch(route, item.href) ? 'active' : ''} href={`#${item.href}`} key={`${item.href}-${item.label}`}><Icon name={item.icon} /><span>{item.label}</span></a>)}</nav>
+      <nav className="mobile-nav">{[nav[0], nav[1], nav[2], { href: '/bills', label: 'Bills', icon: 'list', matches: ['/debts', '/bills'] }, nav[5]].map((item) => <a className={item.matches.some((match) => isRouteMatch(route, match)) || isRouteMatch(route, item.href) ? 'active' : ''} href={`#${item.href}`} key={`${item.href}-${item.label}`}><Icon name={item.icon} /><span>{item.label}</span></a>)}</nav>
     </main>
   </div>
 }
