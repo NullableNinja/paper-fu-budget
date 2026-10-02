@@ -443,3 +443,109 @@
 .theme-root .line-category-list .line-table-row .line-kind,
 .theme-root .line-category-list .line-table-row>span:nth-child(4){font-family:Tahoma,Arial,"Segoe UI",sans-serif!important}
 .theme-root .line-category-list .line-table-row .line-amount{font-family:Tahoma,Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums lining-nums}
+
+/* Amount columns are <strong> cells, so target every grid child—not only spans. */
+.theme-root .line-category-columns>:not(:first-child),
+.theme-root .line-category-list .line-table-row>:not(:first-child),
+.theme-root .line-subtotal-row>:not(:first-child),
+.theme-root .line-cumulative-row>:not(:first-child){
+  border-left:1px solid var(--line)!important;
+  padding-left:12px!important;
+  padding-right:12px!important;
+}
+
+/* Final ledger structure: the status label is a sort control, not a data
+   column, so the visible ledger has one stable nine-track grid everywhere. */
+.theme-root .line-table-head,
+.theme-root .line-table-row,
+.theme-root .line-subtotal-row,
+.theme-root .line-cumulative-row{
+  grid-template-columns:minmax(270px,2fr) 88px 78px 88px repeat(5,minmax(76px,1fr));
+}
+.theme-root .line-category-list .line-table-row{
+  height:58px;
+  min-height:58px;
+  max-height:58px;
+  overflow:hidden;
+}
+.theme-root .line-item-copy{
+  min-width:0;
+  height:34px;
+  min-height:34px;
+  display:grid;
+  grid-template-rows:17px 15px;
+  gap:2px;
+  overflow:hidden;
+}
+.theme-root .line-name{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.theme-root .line-item-meta{
+  min-width:0;
+  height:15px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  flex-wrap:nowrap;
+  overflow:hidden;
+  white-space:nowrap;
+  font-size:9px;
+}
+.theme-root .line-item-meta>*{flex:0 0 auto}
+.theme-root .line-item-meta .tag-list{display:flex;flex-wrap:nowrap;overflow:hidden;max-width:180px}
+.theme-root .line-item-meta .tag-badge{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theme-root .line-item-meta .shared-detail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theme-root .line-meta-text{color:var(--muted);font:9px Tahoma,Arial,sans-serif}
+.theme-root .line-sort-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  width:100%;
+  height:100%;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  text-transform:inherit;
+  cursor:pointer;
+}
+.theme-root .line-sort-button:hover,
+.theme-root .line-sort-button.selected{color:var(--ink)}
+.theme-root .line-category-actions{display:flex;align-items:center;gap:10px}
+.theme-root .line-category-actions>span{white-space:nowrap}
+.theme-root .line-status-sort{
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--muted);
+  padding:4px 7px;
+  font:9px Tahoma,Arial,sans-serif;
+  cursor:pointer;
+}
+.theme-root .line-status-sort:hover,
+.theme-root .line-status-sort.selected{color:var(--ink);border-color:var(--ink)}
+.theme-root .line-cumulative-row{
+  display:grid;
+  align-items:center;
+  border-top:1px solid var(--line);
+  padding:9px 4px;
+  background:color-mix(in srgb,var(--ink) 3%,transparent);
+  font-size:11px;
+  font-weight:400;
+}
+.theme-root .line-cumulative-row>span:first-child{display:grid;gap:2px}
+.theme-root .line-cumulative-row b{font-weight:600}
+.theme-root .line-cumulative-row small{font:9px Tahoma,Arial,sans-serif;color:var(--muted)}
+.theme-root .line-cumulative-row .line-amount{font-family:Tahoma,Arial,sans-serif;font-variant-numeric:tabular-nums;font-weight:400}
+.theme-root .line-cumulative-row .line-amount{text-align:right}
+
+@media (max-width:700px){
+  .theme-root .line-table-head,
+  .theme-root .line-table-row,
+  .theme-root .line-subtotal-row,
+  .theme-root .line-cumulative-row{grid-template-columns:270px 88px 78px 88px repeat(5,78px)}
+}
