@@ -47,4 +47,14 @@
 .theme-root .bill-paid .date-badge{background:var(--mint)}
 .theme-root .bills-panel .segmented-control{background:color-mix(in srgb,var(--page-bg) 60%,transparent)}
 .theme-root .bills-panel .segmented-control button{border-radius:8px;margin:2px}
+.theme-root .scenario-tools-panel{grid-column:1/-1}
+.theme-root .scenario-tools{display:grid;grid-template-columns:auto auto minmax(260px,1fr) minmax(300px,1.25fr);gap:12px;align-items:stretch}
+.theme-root .scenario-tool{display:grid;gap:7px;padding:12px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--page-bg) 42%,transparent);font-size:11px;font-weight:700}
+.theme-root .scenario-tool>span{font:10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
+.theme-root .scenario-tool>div{display:flex;align-items:center;gap:7px}
+.theme-root .scenario-tool input{min-width:0;width:88px;font:500 14px 'DM Mono',monospace}
+.theme-root .scenario-tool b{font:500 14px 'DM Mono',monospace}
+.theme-root .scenario-tool .button{margin-left:auto;white-space:nowrap}
+.theme-root .scenario-tools>.button{align-self:end}
+@media (max-width:1100px){.theme-root .scenario-tools{grid-template-columns:1fr 1fr}.theme-root .scenario-tool{grid-column:span 2}}
 @media (max-width:900px){.theme-root .line-category-head{align-items:flex-start;flex-direction:column;gap:7px}.theme-root .bills-panel .panel-head{align-items:flex-start;flex-direction:column}.theme-root .bill-actions{justify-content:flex-start}}
