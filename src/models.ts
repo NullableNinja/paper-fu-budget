@@ -2,6 +2,15 @@ export type ItemKind = 'fixed' | 'variable' | 'debt' | 'savings' | 'discretionar
 export type Frequency = 'weekly' | 'biweekly' | 'semimonthly' | 'monthly' | 'quarterly' | 'annual'
 export type FilingStatus = 'single' | 'mfj' | 'mfs' | 'hoh'
 
+export interface ThemeSettings {
+  mode: 'light' | 'dark'
+  navColor: string
+  backgroundColor: string
+  accentColor: string
+  backgroundStyle: 'none' | 'paper' | 'mesh' | 'aurora' | 'grid'
+  reduceMotion: boolean
+}
+
 export interface W2TaxProfile {
   taxYear: 2026
   filingStatus: FilingStatus
@@ -35,6 +44,8 @@ export interface BudgetItem {
   autoPay?: boolean
   notes?: string
   active: boolean
+  paid?: boolean
+  paidAt?: string
 }
 
 export interface IncomeSource {
@@ -74,6 +85,7 @@ export interface AppSettings {
   defaultScenarioId: string
   currency: string
   weekStartsOn: 'sunday' | 'monday'
+  theme?: ThemeSettings
 }
 
 export interface AppSnapshot {

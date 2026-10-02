@@ -1,6 +1,7 @@
 import type { AppSnapshot } from '../models'
 import { initialSnapshot } from '../data/seed'
 import { defaultTaxProfile } from '../calculations/taxes'
+import { defaultTheme } from '../app/theme'
 
 const DB_NAME = 'paper-fu-budget'
 const STORE = 'snapshots'
@@ -8,6 +9,7 @@ const KEY = 'current'
 
 const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({
   ...snapshot,
+  settings: { ...snapshot.settings, theme: { ...defaultTheme, ...(snapshot.settings.theme ?? {}) } },
   scenarios: snapshot.scenarios.map((scenario) => {
     const seed = initialSnapshot.scenarios.find((candidate) => candidate.id === scenario.id)
     const existingIds = new Set(scenario.items.map((item) => item.id))

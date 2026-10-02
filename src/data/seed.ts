@@ -44,7 +44,7 @@ const scenario = (id: string, name: string, description: string, salary: number,
 
 export const initialSnapshot: AppSnapshot = {
   schemaVersion: 1,
-  settings: { defaultScenarioId: 'salary-125k', currency: 'USD', weekStartsOn: 'sunday' },
+  settings: { defaultScenarioId: 'salary-125k', currency: 'USD', weekStartsOn: 'sunday', theme: { mode: 'light', navColor: '#f1ecdf', backgroundColor: '#f4efe4', accentColor: '#e17a62', backgroundStyle: 'paper', reduceMotion: false } },
   scenarios: [
     scenario('salary-125k', '$125K Projected', 'Primary projected salary scenario from Northern Trust workbook.', 125000, 77200.521546, { vacation: 50, concert: 50, emergency: 100, 'home-repair': 50, 'general-savings': 100, birthday: 50, 'chapter-13': 1278 }),
     scenario('kt-only', 'KT Only', 'Current financial state using the Kwik Trip payroll model.', 82000, 52291.378346, { vacation: 0, concert: 0, emergency: 75, 'home-repair': 0, 'general-savings': 75, birthday: 75, xcel: 218, brightspeed: 20, mobile: 135.06, orkin: 19.69, water: 36.67, 'rent-fund': 0, storage: 0, vehicle: 0, gas: 200, groceries: 400, 'field-trips': 25, 'school-supplies': 15, 'cat-food': 0, 'pet-vet': 0, reptile: 20, prescriptions: 30, vision: 12.5, household: 50, clothing: 0, sirius: 0, netflix: 0, prime: 10.75, disney: 34.8, 'date-money': 100, 'green-money': 100, 'personal-spend': 200, office: 8.79, proton: 10, 'chapter-13': 527.995, 'student-loan': 0 }, 'Kwik Trip'),
