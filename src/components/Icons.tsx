@@ -1,0 +1,4 @@
+export const Icon = ({ name }: { name: string }) => {
+  const paths: Record<string, string> = { grid: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z', wallet: 'M3 6h18v14H3zM3 6l2-3h14l2 3M16 13h5', chart: 'M4 19V9m5 10V5m5 14v-7m5 7V3', list: 'M5 6h14M5 12h14M5 18h14', settings: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0-5v2m0 14v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M3 12h2m14 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4', lock: 'M6 10V7a6 6 0 0 1 12 0v3M5 10h14v11H5z', plus: 'M12 5v14M5 12h14', copy: 'M8 8h11v11H8zM5 16H4V4h12v1', download: 'M12 4v11m0 0l-4-4m4 4l4-4M5 20h14', upload: 'M12 20V9m0 0l-4 4m4-4l4 4M5 4h14', external: 'M14 5h5v5M19 5l-8 8', logout: 'M10 17l5-5-5-5M15 12H3M21 4v16', close: 'M6 6l12 12M18 6L6 18' }
+  return <svg className="icon" viewBox="0 0 24 24" aria-hidden="true"><path d={paths[name] ?? paths.grid} /></svg>
+}

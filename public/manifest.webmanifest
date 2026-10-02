@@ -1,0 +1,10 @@
+{
+  "name": "Paper-Fu Budget",
+  "short_name": "Budget",
+  "start_url": "./#/dashboard",
+  "display": "standalone",
+  "background_color": "#f4efe4",
+  "theme_color": "#f4efe4",
+  "description": "A private, local-first personal budget dashboard.",
+  "icons": []
+}

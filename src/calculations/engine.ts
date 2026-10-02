@@ -1,0 +1,40 @@
+import type { BudgetScenario, Frequency, ScenarioTotals } from '../models'
+import { calculateW2Taxes } from './taxes'
+
+export const frequencyToMonthly = (amount: number, frequency: Frequency): number => {
+  switch (frequency) {
+    case 'weekly': return amount * 52 / 12
+    case 'biweekly': return amount * 26 / 12
+    case 'semimonthly': return amount * 24 / 12
+    case 'quarterly': return amount / 3
+    case 'annual': return amount / 12
+    default: return amount
+  }
+}
+
+export const calculateScenario = (scenario: BudgetScenario): ScenarioTotals => {
+  const active = scenario.items.filter((candidate) => candidate.active)
+  const taxEstimate = calculateW2Taxes(scenario)
+  const annualIncome = taxEstimate.annualNet
+  const monthlyIncome = annualIncome / 12
+  const monthlyByKind = (kind: string) => active.filter((candidate) => candidate.kind === kind).reduce((sum, candidate) => sum + frequencyToMonthly(candidate.amountMonthly, candidate.frequency), 0)
+  const savings = monthlyByKind('savings')
+  const fixed = monthlyByKind('fixed')
+  const variable = monthlyByKind('variable')
+  const debt = monthlyByKind('debt')
+  const discretionary = monthlyByKind('discretionary')
+  const required = fixed + variable + debt
+  const totalOutflow = required + savings + discretionary
+  const monthlySurplus = monthlyIncome - totalOutflow
+  const paycheckIncome = annualIncome / scenario.paychecksPerYear
+  const paycheckAllocation = totalOutflow * 12 / scenario.paychecksPerYear
+  return { monthlyIncome, annualIncome, paycheckIncome, savings, fixed, variable, debt, discretionary, required, totalOutflow, monthlySurplus, paycheckAllocation, paycheckSurplus: paycheckIncome - paycheckAllocation, debtBalance: scenario.debts.reduce((sum, debtRecord) => sum + debtRecord.balance, 0) }
+}
+
+export const nextPaycheck = (scenario: BudgetScenario) => {
+  const totals = calculateScenario(scenario)
+  return { income: totals.paycheckIncome, bills: totals.required * 12 / scenario.paychecksPerYear, savings: totals.savings * 12 / scenario.paychecksPerYear, discretionary: totals.discretionary * 12 / scenario.paychecksPerYear, remaining: totals.paycheckSurplus }
+}
+
+export const formatCurrency = (value: number, compact = false) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: compact ? 0 : 2 }).format(value)
+export const formatSignedCurrency = (value: number) => `${value >= 0 ? '+' : '-'}${formatCurrency(Math.abs(value), true)}`
