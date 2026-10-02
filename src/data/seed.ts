@@ -34,7 +34,7 @@ const makeItems = (amounts: Record<string, number>, names: Record<string, string
   return sharedItemIds.has(source.id) ? { ...next, shared: true, sharedSharePercent: 50 } : next
 })
 
-const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true }, { id: 'second-job', name: 'Second Job', annualGross: 0, annualNet: 0, netRetention: annualNet / salary, active: false }]
+const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, memberId: 'thomas', payType: 'salary', annualSalary: salary, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }, { id: 'second-job', name: 'Second Job', memberId: 'thomas', payType: 'hourly', hourlyRate: 0, regularHoursPerWeek: 0, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: false, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }]
 
 const debtRecords: DebtRecord[] = [
   { id: 'mortgage-debt', debtor: 'Altra Federal Credit Union', description: '1st Mortgage | 1230 Redfield St', minimumMonthly: 1218.59, dueDay: 1, balance: 151948.06 },
@@ -45,11 +45,11 @@ const debtRecords: DebtRecord[] = [
 ]
 
 const scenario = (id: string, name: string, description: string, salary: number, annualNet: number, amounts: Record<string, number>, incomeName = 'Potential New Job', names: Record<string, string> = {}): BudgetScenario => ({
-  id, name, description, salary, annualNet, paychecksPerYear: 26, incomeSources: incomes(salary, annualNet, incomeName), items: makeItems(amounts, names), debts: debtRecords, taxProfile: defaultTaxProfile(salary), createdAt: now,
+  id, name, description, salary, annualNet, paychecksPerYear: 26, incomeSources: incomes(salary, annualNet, incomeName), householdMembers: [{ id: 'thomas', name: 'Thomas' }, { id: 'vicki', name: 'Vicki' }], items: makeItems(amounts, names), debts: debtRecords, taxProfile: defaultTaxProfile(salary), createdAt: now,
 })
 
 export const initialSnapshot: AppSnapshot = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   settings: { defaultScenarioId: 'salary-125k', currency: 'USD', weekStartsOn: 'sunday', theme: { mode: 'light', navColor: '#f1ecdf', backgroundColor: '#f4efe4', accentColor: '#e17a62', backgroundStyle: 'paper', reduceMotion: false } },
   scenarios: [
     scenario('salary-125k', '$125K Projected', 'Primary projected salary scenario from Northern Trust workbook.', 125000, 77200.521546, { vacation: 50, concert: 50, emergency: 100, 'home-repair': 50, 'general-savings': 100, birthday: 50, 'chapter-13': 1278 }),

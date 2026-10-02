@@ -1,4 +1,4 @@
-import type { BudgetScenario, FilingStatus, W2TaxProfile } from '../models'
+import type { BudgetScenario, FilingStatus, IncomeSource, W2TaxProfile } from '../models'
 
 export interface TaxEstimate {
   grossWages: number
@@ -71,11 +71,41 @@ export const defaultTaxProfile = (salary: number): W2TaxProfile => ({
   taxYear: 2026, filingStatus: 'single', state: 'WI', spouseWages: 0, qualifyingChildren: 0, otherDependents: 0, taxpayer65OrOlder: false, spouse65OrOlder: false, retirement401kRate: 0.09, annualPreTaxBenefits: 7666.10, annualFicaExemptBenefits: 7666.10, annualPostTaxDeductions: 610.22, otherAnnualIncome: 0, additionalFederalCredits: 0, additionalStateCredits: 0, extraFederalWithholding: 0, extraStateWithholding: 0,
 })
 
+export const annualGrossForSource = (source: IncomeSource): number => {
+  const overtime = source.overtime
+  const overtimeHours = overtime?.enabled ? Math.max(0, overtime.hoursPerYear || 0) : 0
+  const multiplier = overtime?.enabled ? Math.max(0, overtime.multiplier || 1) : 0
+  if (source.payType === 'hourly') {
+    const rate = Math.max(0, source.hourlyRate ?? 0)
+    const regularHours = Math.max(0, source.regularHoursPerWeek ?? 0)
+    const paidWeeks = Math.max(0, source.paidWeeksPerYear ?? 52)
+    const base = rate * regularHours * paidWeeks
+    const overtimeRate = overtime?.explicitHourlyRate ?? rate
+    return base + overtimeRate * overtimeHours * multiplier
+  }
+  const salary = Math.max(0, source.annualSalary ?? source.annualGross)
+  const standardHours = Math.max(1, overtime?.standardHoursPerYear ?? 2080)
+  const overtimeRate = overtime?.explicitHourlyRate ?? salary / standardHours
+  return salary + overtimeRate * overtimeHours * multiplier
+}
+
+export const sourceGrossBreakdown = (source: IncomeSource) => {
+  const annualGross = annualGrossForSource(source)
+  if (source.payType === 'hourly') {
+    const base = Math.max(0, source.hourlyRate ?? 0) * Math.max(0, source.regularHoursPerWeek ?? 0) * Math.max(0, source.paidWeeksPerYear ?? 52)
+    return { baseGross: base, overtimeGross: Math.max(0, annualGross - base), annualGross }
+  }
+  const base = Math.max(0, source.annualSalary ?? source.annualGross)
+  return { baseGross: base, overtimeGross: Math.max(0, annualGross - base), annualGross }
+}
+
 export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   const profile = scenario.taxProfile ?? defaultTaxProfile(scenario.salary)
-  const activeWages = scenario.incomeSources.filter((source) => source.active).reduce((sum, source) => sum + source.annualGross, 0)
-  const grossWages = activeWages || scenario.salary
-  const grossIncome = grossWages + profile.spouseWages + profile.otherAnnualIncome
+  const activeSources = scenario.incomeSources.filter((source) => source.active)
+  const sourceWages = activeSources.reduce((sum, source) => sum + annualGrossForSource(source), 0)
+  const legacySpouseWages = profile.spouseWages > 0 && !scenario.incomeSources.some((source) => source.memberId === 'vicki') ? profile.spouseWages : 0
+  const grossWages = activeSources.length > 0 ? sourceWages + legacySpouseWages : scenario.incomeSources.length > 0 ? legacySpouseWages : scenario.salary
+  const grossIncome = grossWages + profile.otherAnnualIncome
   const retirement401k = grossWages * profile.retirement401kRate
   const federalAdjustedGrossIncome = Math.max(0, grossIncome - retirement401k - profile.annualPreTaxBenefits)
   const federalStandard = federalStandardDeduction[profile.filingStatus]
@@ -87,7 +117,7 @@ export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   const wiStandard = profile.state === 'WI' ? wisconsinStandardDeduction(federalAdjustedGrossIncome, profile.filingStatus) : 0
   const wiTaxableIncome = Math.max(0, federalAdjustedGrossIncome - wiStandard - wiExemptions)
   const wisconsinIncomeTax = profile.state === 'WI' ? Math.max(0, wisconsinTax(wiTaxableIncome, profile.filingStatus) - profile.additionalStateCredits) : 0
-  const ficaWages = Math.max(0, grossWages + profile.spouseWages - profile.annualFicaExemptBenefits)
+  const ficaWages = Math.max(0, grossWages - profile.annualFicaExemptBenefits)
   const socialSecurity = Math.min(ficaWages, 184500) * 0.062
   const medicare = ficaWages * 0.0145
   const medicareThreshold = profile.filingStatus === 'mfj' ? 250000 : 200000
@@ -95,4 +125,12 @@ export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   const totalTaxes = federalIncomeTax + wisconsinIncomeTax + socialSecurity + medicare + additionalMedicare
   const annualNet = grossWages - retirement401k - profile.annualPreTaxBenefits - totalTaxes - profile.annualPostTaxDeductions
   return { grossWages, grossIncome, retirement401k, federalAdjustedGrossIncome, federalStandardDeduction: federalStandard, federalTaxableIncome, federalIncomeTax, childTaxCredit: childrenCredit, wisconsinStandardDeduction: wiStandard, wisconsinExemptions: wiExemptions, wisconsinTaxableIncome: wiTaxableIncome, wisconsinIncomeTax, socialSecurity, medicare, additionalMedicare, totalTaxes, postTaxDeductions: profile.annualPostTaxDeductions, annualNet, paycheckNet: annualNet / scenario.paychecksPerYear, effectiveTaxRate: grossWages ? totalTaxes / grossWages : 0, assumptions: ['2026 federal brackets and standard deductions', 'Wisconsin 2026 full-year resident rates and standard deduction', 'Social Security wage base of $184,500', 'Employer withholding and credits may differ from final return liability'] }
+}
+
+export const calculateSourceNetContribution = (scenario: BudgetScenario, sourceId: string): number => {
+  const source = scenario.incomeSources.find((candidate) => candidate.id === sourceId)
+  if (!source || !source.active) return 0
+  const householdNet = calculateW2Taxes(scenario).annualNet
+  const withoutSource = { ...scenario, incomeSources: scenario.incomeSources.map((candidate) => candidate.id === sourceId ? { ...candidate, active: false } : candidate) }
+  return householdNet - calculateW2Taxes(withoutSource).annualNet
 }

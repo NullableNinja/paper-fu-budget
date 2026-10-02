@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { calculateScenario, frequencyToMonthly, nextPaycheck } from './engine'
-import { calculateW2Taxes } from './taxes'
+import { annualGrossForSource, calculateSourceNetContribution, calculateW2Taxes } from './taxes'
 import { initialSnapshot } from '../data/seed'
 
 describe('budget calculation engine', () => {
@@ -56,9 +56,27 @@ describe('budget calculation engine', () => {
   it('handles FICA limits and additional Medicare', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
     scenario.salary = 250000
+    scenario.incomeSources[0].annualSalary = 250000
     scenario.incomeSources[0].annualGross = 250000
     const taxes = calculateW2Taxes(scenario)
     expect(taxes.socialSecurity).toBeCloseTo(184500 * 0.062)
     expect(taxes.additionalMedicare).toBeGreaterThan(0)
+  })
+
+  it('annualizes hourly income and overtime', () => {
+    const source = { id: 'hourly', name: 'Second job', payType: 'hourly' as const, hourlyRate: 20, regularHoursPerWeek: 10, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerYear: 20, multiplier: 1.5 } }
+    expect(annualGrossForSource(source)).toBeCloseTo(11000)
+  })
+
+  it('adds overtime to a salaried source', () => {
+    const source = { id: 'salary', name: 'Vicki', payType: 'salary' as const, annualSalary: 80000, annualGross: 80000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerYear: 100, multiplier: 1.5 } }
+    expect(annualGrossForSource(source)).toBeCloseTo(85769.2308, 3)
+  })
+
+  it('calculates a source-level marginal net contribution', () => {
+    const scenario = structuredClone(initialSnapshot.scenarios[0])
+    const source = { id: 'vicki-job', name: 'Vicki', memberId: 'vicki', payType: 'salary' as const, annualSalary: 50000, annualGross: 50000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: false, hoursPerYear: 0, multiplier: 1.5 } }
+    const withSource = { ...scenario, incomeSources: [...scenario.incomeSources, source] }
+    expect(calculateSourceNetContribution(withSource, source.id)).toBeGreaterThan(0)
   })
 })

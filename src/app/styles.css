@@ -636,3 +636,7 @@
   border-radius:0!important;
   background:var(--workbook-total-bg)!important;
 }
+
+.income-row{grid-template-columns:repeat(4,minmax(150px,1fr))}
+@media (max-width:900px){.income-row{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.income-row{grid-template-columns:1fr}}
