@@ -592,3 +592,27 @@
 .theme-root .line-cumulative-row small{font-size:10px;line-height:1.2}
 .theme-root .line-subtotal-row .line-amount,
 .theme-root .line-cumulative-row .line-amount{font-size:14px!important;font-weight:700!important}
+
+/* Subtotal and cumulative total are the same visual component. Keep their
+   tracks, margins, padding, borders, font, and surface identical. */
+.theme-root .line-subtotal-row,
+.theme-root .line-cumulative-row{
+  box-sizing:border-box;
+  margin:10px 12px 0!important;
+  padding:13px 4px!important;
+  border-top:2px solid var(--line)!important;
+  border-bottom:1px solid var(--line)!important;
+  background:color-mix(in srgb,var(--positive) 10%,var(--paper))!important;
+  font-family:Tahoma,Arial,"Segoe UI",sans-serif!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+.theme-root .line-subtotal-row>span:first-child,
+.theme-root .line-cumulative-row>span:first-child{display:grid;gap:3px}
+.theme-root .line-subtotal-row b,
+.theme-root .line-cumulative-row b{font:700 14px/1.25 Tahoma,Arial,"Segoe UI",sans-serif!important}
+.theme-root .line-subtotal-row small,
+.theme-root .line-cumulative-row small{margin-top:0;color:var(--muted);font:10px/1.2 Tahoma,Arial,"Segoe UI",sans-serif!important}
+.theme-root .line-subtotal-row .line-amount,
+.theme-root .line-cumulative-row .line-amount{font:700 14px/1.25 Tahoma,Arial,"Segoe UI",sans-serif!important;font-variant-numeric:tabular-nums lining-nums}
