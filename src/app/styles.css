@@ -357,3 +357,22 @@
 .confirm-dialog p:not(.eyebrow){margin:0;color:var(--muted);line-height:1.5;font-size:13px}
 .confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
 @media (max-width:700px){.confirm-dialog{padding:22px}.confirm-actions{display:grid;grid-template-columns:1fr 1fr}.confirm-actions .button{width:100%}}
+
+/* Final ledger alignment pass: every category header, line, and subtotal uses
+   the same tracks; labels are centered over their numeric columns. */
+.theme-root .line-category-columns>span:not(:first-child){text-align:center}
+.theme-root .line-table-row>span:nth-child(2),
+.theme-root .line-table-row>span:nth-child(3),
+.theme-root .line-table-row>span:nth-child(4),
+.theme-root .line-table-row>span:last-child{text-align:center}
+.theme-root .line-table-head>span:not(:first-child){text-align:center}
+.theme-root .line-table-row .line-name{font-family:Cambria,Georgia,'Times New Roman',serif!important;font-size:15px;font-weight:400!important;line-height:1.25}
+.theme-root .line-item-copy{font-family:Cambria,Georgia,'Times New Roman',serif}
+.theme-root .line-item-copy small,.theme-root .line-item-copy .shared-badge,.theme-root .line-item-copy .tag-badge{font-family:'DM Mono',monospace}
+
+/* Shared expenses are identified by a quiet accent rule and compact metadata,
+   never by painting the entire ledger purple. */
+.theme-root .shared-row,.theme-root .shared-row.row-alt{background:var(--paper)!important;box-shadow:inset 3px 0 0 var(--shared)}
+.theme-root .shared-row:hover,.theme-root .shared-row:focus-visible{background:color-mix(in srgb,var(--shared) 4%,var(--paper))!important}
+.theme-root .shared-badge{border-radius:3px;padding:2px 5px;background:color-mix(in srgb,var(--shared) 8%,var(--paper));color:var(--shared);font-size:8px;font-weight:600}
+.theme-root .shared-detail{color:var(--muted)!important;font-size:9px!important}

@@ -15,7 +15,6 @@ const linePeriods: Array<{ value: BudgetPeriod; label: string }> = [
 
 const sharePercent = (item: BudgetItem) => Math.min(100, Math.max(1, item.sharedSharePercent ?? 50))
 const householdAmount = (item: BudgetItem) => item.amountMonthly / (sharePercent(item) / 100)
-const hasDueDate = (item: BudgetItem) => Boolean(item.dueDay || item.dueUponReceipt)
 const ramseyPriority = [
   ['housing', 'utilities', 'rent', 'mortgage'],
   ['food', 'grocery'],
@@ -40,7 +39,7 @@ const ramseyRank = (category: string) => {
   return index === -1 ? ramseyPriority.length : index
 }
 
-export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYear = 26, showLate = false }: { items: BudgetItem[]; onSelect?: (item: BudgetItem) => void; compact?: boolean; paychecksPerYear?: number; showLate?: boolean }) => {
+export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYear = 26 }: { items: BudgetItem[]; onSelect?: (item: BudgetItem) => void; compact?: boolean; paychecksPerYear?: number }) => {
   const [query, setQuery] = useState('')
   const [kind, setKind] = useState<ItemKind | 'all'>('all')
   const [category, setCategory] = useState('all')
@@ -92,7 +91,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
       <div className="line-category-head"><div><span className="eyebrow">Category</span><h3>{group}</h3></div><span>{groupItems.filter((item) => item.active).length} active lines</span></div>
       <div className="line-table-head line-category-columns"><span>Line item</span><span>Due</span><span>Type</span><span>Frequency</span>{linePeriods.map((period) => <span key={period.value}>{period.label}</span>)}<span>Status</span></div>
       <div className="line-category-list">{groupItems.map((item, index) => <button className={`line-table-row ${item.active ? '' : 'inactive'} ${index % 2 ? 'row-alt' : ''} ${item.shared ? 'shared-row' : ''}`} key={item.id} onClick={() => onSelect?.(item)} disabled={!onSelect}>
-        <span className="line-item-copy"><span className="line-name">{item.name}</span>{showSharedDetails && item.shared && <span className="shared-badge">Shared · your {sharePercent(item)}%</span>}{item.tags && item.tags.length > 0 && <span className="tag-list">{item.tags.map((value) => <span className="tag-badge" key={value}>{value}</span>)}</span>}<small>{item.autoPay ? 'Auto-pay' : ''}{item.notes ? ' · Note saved' : ''}</small>{showSharedDetails && item.shared && <small className="shared-detail">Household {formatCurrency(householdAmount(item))} · your share {formatCurrency(item.amountMonthly)}</small>}</span><span className={`line-due ${showLate && hasDueDate(item) && !item.paid ? 'late-label' : ''}`}>{item.dueUponReceipt ? 'Upon receipt' : item.dueDay ? `Day ${item.dueDay}` : '—'}{showLate && hasDueDate(item) && !item.paid ? ' · late' : ''}</span><span className="line-kind">{item.kind}</span><span>{item.frequency}</span>{linePeriods.map((period) => <strong className="line-amount" key={period.value}>{amountFor(item, period)}</strong>)}<span className={item.active ? 'positive' : 'muted'}>{item.active ? 'Included' : 'Off'}</span>
+        <span className="line-item-copy"><span className="line-name">{item.name}</span>{showSharedDetails && item.shared && <span className="shared-badge">Shared · your {sharePercent(item)}%</span>}{item.tags && item.tags.length > 0 && <span className="tag-list">{item.tags.map((value) => <span className="tag-badge" key={value}>{value}</span>)}</span>}<small>{item.autoPay ? 'Auto-pay' : ''}{item.notes ? ' · Note saved' : ''}</small>{showSharedDetails && item.shared && <small className="shared-detail">Household {formatCurrency(householdAmount(item))} · your share {formatCurrency(item.amountMonthly)}</small>}</span><span className="line-due">{item.dueUponReceipt ? 'Upon receipt' : item.dueDay ? `Day ${item.dueDay}` : '—'}</span><span className="line-kind">{item.kind}</span><span>{item.frequency}</span>{linePeriods.map((period) => <strong className="line-amount" key={period.value}>{amountFor(item, period)}</strong>)}<span className={item.active ? 'positive' : 'muted'}>{item.active ? 'Included' : 'Off'}</span>
       </button>)}</div>
       <div className="line-subtotal-row"><span><b>Category subtotal</b><small>{groupItems.filter((item) => item.active).length} active lines{groupItems.some((item) => item.active && item.shared) ? ` · ${groupItems.filter((item) => item.active && item.shared).length} shared` : ''}</small></span><span>—</span><span /><span />{linePeriods.map((period) => <strong className="line-amount" key={period.value}>{subtotalFor(groupItems, period)}</strong>)}<span className="positive">Included</span></div>
     </section>)}{filtered.length === 0 && <div className="empty-state">No line items match these filters.</div>}</div>
