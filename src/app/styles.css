@@ -419,3 +419,27 @@
 .sheet-portal .button.danger,.sheet-portal .button.danger-solid{color:#fff!important;background:#c43f2b!important;border-color:#8f2416!important;box-shadow:3px 3px 0 #7b2115!important}
 .sheet-portal .button.danger:hover,.sheet-portal .button.danger-solid:hover{color:#fff!important;background:#a92f20!important;border-color:#7b2115!important;box-shadow:4px 4px 0 #64190f!important}
 .sheet-portal .button.primary{color:var(--paper)!important;background:var(--ink)!important}
+
+/* Accounting-style ledger finish: compact business typography and clear
+   separators with breathing room on both sides of every cell. */
+.theme-root .line-category,
+.theme-root .line-category-columns,
+.theme-root .line-category-list .line-table-row,
+.theme-root .line-subtotal-row{font-family:Tahoma,Arial,"Segoe UI",sans-serif}
+.theme-root .line-category-head h3{font-family:Tahoma,Arial,"Segoe UI",sans-serif;font-weight:700;letter-spacing:0}
+.theme-root .line-category-columns>span:not(:first-child),
+.theme-root .line-category-list .line-table-row>span:not(:first-child),
+.theme-root .line-subtotal-row>span:not(:first-child){
+  border-left:1px solid color-mix(in srgb,var(--line) 35%,var(--ink) 65%)!important;
+  padding-left:12px!important;
+  padding-right:12px!important;
+}
+.theme-root .line-category-columns>span:first-child,
+.theme-root .line-category-list .line-table-row>span:first-child,
+.theme-root .line-subtotal-row>span:first-child{padding-right:12px!important}
+.theme-root .line-category-columns>span:not(:first-child){font-family:Tahoma,Arial,"Segoe UI",sans-serif;font-weight:400}
+.theme-root .line-category-list .line-table-row .line-name,
+.theme-root .line-category-list .line-table-row .line-due,
+.theme-root .line-category-list .line-table-row .line-kind,
+.theme-root .line-category-list .line-table-row>span:nth-child(4){font-family:Tahoma,Arial,"Segoe UI",sans-serif!important}
+.theme-root .line-category-list .line-table-row .line-amount{font-family:Tahoma,Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums lining-nums}
