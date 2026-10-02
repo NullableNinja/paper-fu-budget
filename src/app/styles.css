@@ -658,6 +658,13 @@
   border-right:3px solid #86aebb!important;
 }
 
+/* Category headers should meet the table edges; the old inset margins left
+   visible strips of page background on both sides. */
+.theme-root .line-category-columns{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
 .income-row{grid-template-columns:repeat(4,minmax(150px,1fr))}
 @media (max-width:900px){.income-row{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.income-row{grid-template-columns:1fr}}
