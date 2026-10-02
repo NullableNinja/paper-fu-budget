@@ -59,6 +59,11 @@
 @media (max-width:1100px){.theme-root .scenario-tools{grid-template-columns:1fr 1fr}.theme-root .scenario-tool{grid-column:span 2}}
 @media (max-width:900px){.theme-root .line-category-head{align-items:flex-start;flex-direction:column;gap:7px}.theme-root .bills-panel .panel-head{align-items:flex-start;flex-direction:column}.theme-root .bill-actions{justify-content:flex-start}}
 
+/* Dashboard telemetry: tighter summary, denser signal. */
+.theme-root .hero{min-height:0;padding:25px 30px;grid-template-columns:minmax(0,1fr) auto;align-items:center;background:color-mix(in srgb,var(--paper) 91%,var(--accent));color:var(--ink);border-left:5px solid var(--accent)}.theme-root .hero:after{width:210px;height:210px;right:-80px;bottom:-145px;border-color:color-mix(in srgb,var(--accent) 24%,transparent);box-shadow:0 0 0 24px color-mix(in srgb,var(--accent) 8%,transparent),0 0 0 48px color-mix(in srgb,var(--accent) 5%,transparent)}.theme-root .hero .eyebrow{color:var(--muted)}.theme-root .hero h2{font-size:38px;margin-bottom:10px}.theme-root .hero h2 em{color:var(--accent)}.theme-root .hero-copy{max-width:560px;color:var(--muted);margin:0;line-height:1.4}.theme-root .hero-stamp{padding-left:30px;border-left:1px solid color-mix(in srgb,var(--ink) 18%,transparent);text-align:right}.theme-root .hero-stamp span,.theme-root .hero-stamp small{color:var(--muted)}.theme-root .hero-stamp b{font-size:32px;color:var(--positive)}.telemetry-panel{grid-column:1/-1}.telemetry-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center}.donut-chart-wrap{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center}.donut-visual{position:relative;width:180px;height:180px}.donut-visual svg{width:100%;height:100%;overflow:visible}.donut-track,.donut-segment{fill:none;stroke-width:22}.donut-track{stroke:var(--track)}.donut-segment{transform:rotate(-90deg);transform-origin:60px 60px;stroke-linecap:butt}.donut-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:2px}.donut-center strong{font:600 20px 'DM Mono',monospace;letter-spacing:-.07em}.donut-center span{font:9px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}.donut-legend{display:grid;gap:10px}.donut-legend-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:9px;font-size:12px}.donut-legend-row span{display:flex;align-items:center;gap:8px}.donut-legend-row i{width:9px;height:9px;border-radius:50%;display:inline-block}.donut-legend-row b{font:500 12px 'DM Mono',monospace}.telemetry-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.telemetry-stats>div{display:grid;gap:5px;padding:14px;border:1px solid var(--line);background:var(--surface-inset);border-radius:12px}.telemetry-stats span,.telemetry-stats small{font:10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}.telemetry-stats b{font:500 21px 'DM Mono',monospace;letter-spacing:-.06em}.telemetry-stats small{text-transform:none;font-size:10px}.bill-watch-summary{display:flex;gap:8px;flex-wrap:wrap;margin:-6px 0 4px}.bill-watch-summary span{border:1px solid var(--line);border-radius:999px;padding:5px 8px;font:10px 'DM Mono',monospace;text-transform:uppercase}.bill-watch-row{grid-template-columns:40px minmax(0,1fr) auto}.bill-watch-row.bill-overdue{background:var(--negative-surface);box-shadow:inset 3px 0 0 var(--negative)}.bill-watch-row.bill-soon{background:color-mix(in srgb,var(--warning) 10%,transparent);box-shadow:inset 3px 0 0 var(--warning)}.bill-watch-row.bill-paid{opacity:.62}.bill-watch-row.bill-paid strong{text-decoration:line-through}.bill-watch-row.bill-receipt .date-badge{background:var(--accent)}.bill-watch-meta{display:grid;gap:4px;text-align:right;justify-items:end}.bill-watch-meta span{font:10px 'DM Mono',monospace;text-transform:uppercase;white-space:nowrap}.bill-watch-meta strong{font:500 12px 'DM Mono',monospace;white-space:nowrap}
+@media (max-width:900px){.theme-root .hero{grid-template-columns:1fr;gap:22px}.theme-root .hero-stamp{border-left:0;border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent);padding:14px 0 0;text-align:left;justify-self:stretch}.telemetry-grid{grid-template-columns:1fr}.donut-chart-wrap{max-width:500px}.bill-watch-row{grid-template-columns:40px minmax(0,1fr) auto}}
+@media (max-width:520px){.theme-root .hero{padding:22px 20px;min-height:0}.theme-root .hero h2{font-size:32px}.donut-chart-wrap{grid-template-columns:145px 1fr;gap:14px}.donut-visual{width:145px;height:145px}.donut-center strong{font-size:16px}.telemetry-stats{gap:8px}.telemetry-stats>div{padding:11px}.bill-watch-row{grid-template-columns:38px minmax(0,1fr)}.bill-watch-meta{grid-column:2;text-align:left;justify-items:start}.bill-watch-meta strong{font-size:11px}}
+
 /* Semantic tokens and layout corrections for the real dark theme. */
 .theme-root{--surface-raised:color-mix(in srgb,var(--paper) 94%,var(--page-bg));--surface-inset:color-mix(in srgb,var(--page-bg) 48%,var(--paper));--track:color-mix(in srgb,var(--ink) 13%,var(--paper));--focus-ring:var(--accent);--warning:#d8a742;--warning-surface:color-mix(in srgb,var(--warning) 20%,var(--paper));--negative-surface:color-mix(in srgb,var(--negative) 18%,var(--paper));--positive-surface:color-mix(in srgb,var(--positive) 18%,var(--paper))}
 .theme-root .positive{color:var(--positive)!important}.theme-root .negative{color:var(--negative)!important}
@@ -691,6 +696,58 @@
 @media (max-width:700px){
   .theme-root .income-adjustment-row{grid-template-columns:1fr;gap:10px}
   .theme-root .income-adjustment-row .income-inline-field{max-width:100%}
+}
+
+/* Income sources are job cards, not a single compressed spreadsheet row. */
+.theme-root .income-list{gap:14px}
+.theme-root .income-row{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:14px;
+  align-items:end;
+  padding:22px 20px 18px;
+  border:1px solid var(--line);
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  background:color-mix(in srgb,var(--paper) 92%,var(--page-bg))!important;
+  box-shadow:4px 4px 0 color-mix(in srgb,var(--shadow-color) 13%,transparent);
+}
+.theme-root .income-row:hover{background:color-mix(in srgb,var(--accent) 5%,var(--paper))!important}
+.theme-root .income-row>label{min-width:0;display:grid;grid-column:span 3;gap:6px;font-size:11px;font-weight:700}
+.theme-root .income-row>label:nth-child(1){grid-column:span 3}
+.theme-root .income-row>label:nth-child(2){grid-column:span 3}
+.theme-root .income-row>label:nth-child(3){grid-column:span 3}
+.theme-root .income-row>label:nth-child(4){grid-column:span 3}
+.theme-root .income-row>label input,
+.theme-root .income-row>label select{min-height:40px}
+.theme-root .income-row>.check-row{grid-column:span 3;min-height:40px;align-self:center}
+.theme-root .income-row>strong{grid-column:span 6;align-self:center;padding:0;text-align:right;font:600 14px 'DM Mono',monospace;white-space:nowrap}
+.theme-root .income-actions{grid-column:span 3;justify-self:end;position:relative}
+.theme-root .income-actions summary{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--ink);background:var(--paper);font:700 20px/1 Tahoma,Arial,sans-serif;cursor:pointer;list-style:none}
+.theme-root .income-actions summary::-webkit-details-marker{display:none}
+.theme-root .income-actions[open] summary{background:var(--ink);color:var(--paper)}
+.theme-root .income-menu{position:absolute;right:0;top:44px;z-index:3;padding:8px;border:1px solid var(--line);background:var(--paper);box-shadow:5px 5px 0 color-mix(in srgb,var(--shadow-color) 18%,transparent)}
+.theme-root .income-menu .button{white-space:nowrap}
+.theme-root .income-adjustments{border-top:3px solid var(--accent)}
+.theme-root .income-adjustments .panel-head{align-items:center}
+.theme-root .income-adjustments .panel-lede{max-width:650px}
+@media (max-width:900px){
+  .theme-root .income-row{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .theme-root .income-row>label:nth-child(-n+4){grid-column:span 3}
+  .theme-root .income-row>.check-row{grid-column:span 3}
+  .theme-root .income-row>strong{grid-column:span 4;text-align:left}
+  .theme-root .income-actions{grid-column:span 2}
+}
+@media (max-width:520px){
+  .theme-root .income-row{grid-template-columns:1fr;padding:18px 15px}
+  .theme-root .income-row>label:nth-child(n),
+  .theme-root .income-row>.check-row,
+  .theme-root .income-row>strong,
+  .theme-root .income-actions{grid-column:auto}
+  .theme-root .income-row>strong{text-align:left}
+  .theme-root .income-actions{justify-self:start}
+  .theme-root .income-adjustments .panel-head{align-items:flex-start;flex-direction:column}
 }
 
 /* Paycheck model worksheet layout */
