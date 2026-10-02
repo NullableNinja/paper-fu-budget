@@ -413,3 +413,9 @@
 .theme-root .line-subtotal-row,
 .theme-root .line-subtotal-row .line-amount,
 .theme-root .line-subtotal-row b{font-weight:700!important}
+
+/* Sheet editors are rendered through a portal outside .theme-root, so their
+   destructive action needs an unscoped portal rule as well. */
+.sheet-portal .button.danger,.sheet-portal .button.danger-solid{color:#fff!important;background:#c43f2b!important;border-color:#8f2416!important;box-shadow:3px 3px 0 #7b2115!important}
+.sheet-portal .button.danger:hover,.sheet-portal .button.danger-solid:hover{color:#fff!important;background:#a92f20!important;border-color:#7b2115!important;box-shadow:4px 4px 0 #64190f!important}
+.sheet-portal .button.primary{color:var(--paper)!important;background:var(--ink)!important}
