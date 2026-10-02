@@ -645,6 +645,19 @@
   background:color-mix(in srgb,var(--shared) 5%,color-mix(in srgb,var(--ink) 5%,var(--paper)))!important;
 }
 
+/* Mirror the category/ownership edge accents at the end of every row. */
+.theme-root .line-category .line-table-row{
+  box-shadow:inset -3px 0 0 var(--line);
+}
+.theme-root .line-category .line-table-row.shared-row,
+.theme-root .line-category .line-table-row.shared-row.row-alt{
+  box-shadow:inset 3px 0 0 var(--shared),inset -3px 0 0 var(--shared);
+}
+.theme-root .line-category-totals .line-subtotal-row,
+.theme-root .line-category-totals .line-cumulative-row{
+  border-right:3px solid #86aebb!important;
+}
+
 .income-row{grid-template-columns:repeat(4,minmax(150px,1fr))}
 @media (max-width:900px){.income-row{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.income-row{grid-template-columns:1fr}}
