@@ -317,3 +317,25 @@
 .theme-root .shared-detail{color:var(--muted)!important}
 .theme-root .line-item-copy small:empty{display:none}
 .theme-root .line-table-row .line-name{font-weight:500}
+
+/* Ledger typography and shape: statement-like names, restrained surfaces. */
+.theme-root .line-item-copy{font-family:Cambria,Georgia,'Times New Roman',serif}
+.theme-root .line-name{font-family:Cambria,Georgia,'Times New Roman',serif;font-size:15px;letter-spacing:-.01em}
+.theme-root .line-item-copy small{font-family:'DM Mono',monospace}
+.theme-root .line-category{border-radius:4px}
+.theme-root .line-category-head,.theme-root .line-category-columns{border-radius:0}
+.theme-root .panel,.theme-root .metric-card,.theme-root .scenario-card,.theme-root .period-summary-card{border-radius:5px}
+.theme-root .hero,.theme-root .paycheck-hero{border-radius:8px}
+.theme-root .sheet{border-radius:10px}
+.theme-root .sheet-head{border-radius:0}
+.theme-root .button.danger{
+  color:#fff!important;
+  background:var(--negative)!important;
+  border-color:var(--negative)!important;
+  box-shadow:2px 2px 0 color-mix(in srgb,var(--negative) 55%,var(--ink))!important;
+}
+.theme-root .button.danger:hover{
+  color:#fff!important;
+  background:color-mix(in srgb,var(--negative) 82%,var(--ink))!important;
+  box-shadow:3px 3px 0 color-mix(in srgb,var(--negative) 55%,var(--ink))!important;
+}
