@@ -79,3 +79,54 @@
 .theme-root .topbar{position:sticky;top:0;z-index:4;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 @media (min-width:761px) and (max-width:980px){.theme-root .app-shell{grid-template-columns:220px 1fr}.theme-root .sidebar{display:flex}.theme-root .mobile-nav{display:none}.theme-root .topbar{padding:22px 24px 18px}.theme-root .content{padding:24px 24px 60px}.theme-root .page-grid{grid-template-columns:1fr}.theme-root .metrics{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:700px){.theme-root .topbar{align-items:stretch;flex-direction:column;gap:16px}.theme-root .scenario-select{width:100%}.theme-root .page-intro{align-items:flex-start;flex-direction:column}.theme-root .line-table-head{display:none}.theme-root .line-table-body{min-width:0}.theme-root .line-table-row{grid-template-columns:1fr auto;gap:8px}.theme-root .line-table-row>span:nth-child(2),.theme-root .line-table-row>span:nth-child(3){display:none}.theme-root .line-table-row strong{grid-column:2;grid-row:1}.theme-root .line-table-row>span:last-child{grid-column:2;grid-row:2;text-align:right}.theme-root .scenario-tools{grid-template-columns:1fr}.theme-root .scenario-tool{grid-column:auto}.theme-root .scenario-tool>div{flex-wrap:wrap}.theme-root .scenario-tool .button{margin-left:0;width:100%}}
+
+/* Workflow polish: make the budget read like a calm, full-width ledger. */
+.theme-root .hero:after{display:none}
+.theme-root:after{content:'';position:fixed;inset:-18%;z-index:0;pointer-events:none;opacity:.48;background:radial-gradient(ellipse at 70% 2%,transparent 0 27%,color-mix(in srgb,var(--ink) 16%,transparent) 27.2%,transparent 27.55%),radial-gradient(ellipse at 13% 112%,transparent 0 25%,color-mix(in srgb,var(--ink) 12%,transparent) 25.2%,transparent 25.55%),radial-gradient(ellipse at 105% 68%,transparent 0 18%,color-mix(in srgb,var(--accent) 13%,transparent) 18.2%,transparent 18.55%);animation:ambient-orbit 32s ease-in-out infinite alternate}
+.theme-root>.app-shell,.theme-root>.login-page{z-index:1}
+.theme-root h1,.theme-root h2,.theme-root h3{font-family:Georgia,'Times New Roman',serif}
+.theme-root .topbar h1{font-size:31px;letter-spacing:-.055em}
+.theme-root .page-intro h2{font-size:42px;letter-spacing:-.065em}
+.theme-root .hero h2{font-size:52px;letter-spacing:-.07em}
+.theme-root .panel h2{letter-spacing:-.045em}
+.theme-root .panel,.theme-root .metric-card,.theme-root .hero,.theme-root .paycheck-hero,.theme-root .insight{background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.theme-root .hero{color:var(--ink)}
+.theme-root .hero .eyebrow,.theme-root .hero .hero-copy,.theme-root .hero .hero-stamp span,.theme-root .hero .hero-stamp small{color:var(--muted)}
+.theme-root .metric-card.tone-ink{background:var(--ink);color:var(--paper)}
+.theme-root .metric-card.tone-mint{background:color-mix(in srgb,var(--mint) 76%,var(--paper));color:var(--ink)}
+.theme-root .metric-card.tone-coral{background:color-mix(in srgb,var(--accent) 34%,var(--paper));color:var(--ink)}
+.theme-root .panel{border-width:1px;box-shadow:5px 5px 0 color-mix(in srgb,var(--shadow-color) 19%,transparent)}
+.theme-root .panel:hover{box-shadow:6px 7px 0 color-mix(in srgb,var(--shadow-color) 18%,transparent);transform:translateY(-1px);transition:transform .22s ease,box-shadow .22s ease}
+.theme-root .panel-head{align-items:end}
+.theme-root .line-tools{grid-template-columns:minmax(240px,1fr) 170px 190px;align-items:center;padding-bottom:17px;border-bottom:1px solid var(--line)}
+.theme-root .line-table-head{padding:15px 14px 10px}
+.theme-root .line-category{margin:16px 0 0;padding:0;border:1px solid color-mix(in srgb,var(--ink) 20%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--page-bg) 22%,transparent);overflow:hidden}
+.theme-root .line-category:first-child{margin-top:14px}
+.theme-root .line-category-head{padding:16px 18px 13px;background:color-mix(in srgb,var(--paper) 45%,transparent);border-bottom:1px solid var(--line)}
+.theme-root .line-category-head h3{font-size:22px;margin:0}
+.theme-root .line-category-head .eyebrow{margin-bottom:6px}
+.theme-root .line-category-list{padding:0 14px}
+.theme-root .line-category .line-table-row{padding:14px 4px;background:transparent}
+.theme-root .line-category .line-table-row.row-alt{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.theme-root .line-category .line-table-row:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.theme-root .line-category .line-table-row:last-child{border-bottom:0}
+.theme-root .line-table-row:focus-visible{background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.theme-root .mobile-nav{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+.theme-root .mobile-nav::-webkit-scrollbar{display:none}
+.theme-root .mobile-nav a{flex:0 0 78px;min-width:78px;padding-inline:4px;white-space:normal;text-align:center}
+
+/* The editor is a true dialog/bottom sheet, never an in-flow page expansion. */
+.theme-root .sheet-backdrop{place-items:center;justify-content:center;padding:20px;background:color-mix(in srgb,var(--shadow-color) 66%,transparent);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.theme-root .sheet{width:min(570px,100%);height:auto;max-height:min(820px,calc(100vh - 40px));padding:0;border:1px solid color-mix(in srgb,var(--ink) 42%,var(--line));border-radius:22px;box-shadow:12px 12px 0 color-mix(in srgb,var(--shadow-color) 28%,transparent);overflow:hidden;background:var(--paper)}
+.theme-root .sheet-head{margin:0;padding:22px 24px 17px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 84%,var(--page-bg));align-items:center}
+.theme-root .sheet-head .eyebrow{margin:0 0 6px}
+.theme-root .sheet-head h2{font-size:27px}
+.theme-root .sheet-body{padding:22px 24px 26px;max-height:calc(100vh - 155px);overflow:auto}
+.theme-root .sheet .edit-form{gap:16px}
+.theme-root .sheet .edit-form .button.wide{margin-top:4px}
+.theme-root .bill-table-row.row-alt,.theme-root .income-row:nth-child(even),.theme-root .debt-row:nth-child(even),.theme-root .comparison-row:nth-child(even),.theme-root .item-row:nth-child(even){background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.theme-root .bill-table-row.row-alt:hover,.theme-root .income-row:nth-child(even):hover,.theme-root .debt-row:nth-child(even):hover,.theme-root .comparison-row:nth-child(even):hover,.theme-root .item-row:nth-child(even):hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.theme-root .bill-paid,.theme-root .bill-paid.row-alt{background:var(--positive-surface)}
+.theme-root .alert.error,.theme-root .negative-state{color:var(--negative)}
+@keyframes ambient-orbit{from{transform:translate3d(-1.5%,0,0) rotate(-1deg)}to{transform:translate3d(1.5%,2%,0) rotate(1deg)}}
+@media (max-width:700px){.theme-root .page-intro h2{font-size:35px}.theme-root .hero h2{font-size:42px}.theme-root .line-tools{grid-template-columns:1fr;padding-bottom:13px}.theme-root .line-category-head{padding:14px}.theme-root .line-category-list{padding:0 12px}.theme-root .line-category-head h3{font-size:20px}.theme-root .line-table-row{padding:13px 2px}.theme-root .sheet-backdrop{align-items:end;padding:12px}.theme-root .sheet{width:100%;max-height:calc(100vh - 24px);border-radius:22px}.theme-root .sheet-body{max-height:calc(100vh - 132px);padding:18px 18px 24px}.theme-root .sheet-head{padding:18px}.theme-root .sheet-head h2{font-size:24px}}
