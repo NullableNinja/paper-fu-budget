@@ -293,3 +293,27 @@
   .theme-root .line-table-row strong{grid-column:auto;grid-row:auto}
   .theme-root .line-table-row>span:last-child{grid-column:auto;grid-row:auto;text-align:left}
 }
+
+/* Shared expenses are a detail cue, not a second page color. */
+.theme-root .shared-row{
+  background:color-mix(in srgb,var(--shared) 5%,var(--paper))!important;
+  box-shadow:inset 3px 0 0 var(--shared);
+}
+.theme-root .shared-row.row-alt{
+  background:color-mix(in srgb,var(--shared) 7%,var(--paper))!important;
+}
+.theme-root .shared-row:hover,.theme-root .shared-row:focus-visible{
+  background:color-mix(in srgb,var(--shared) 11%,var(--paper))!important;
+}
+.theme-root .shared-badge{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  border-radius:999px;
+  padding:3px 7px;
+  background:color-mix(in srgb,var(--shared) 9%,var(--paper));
+  font-size:8px;
+}
+.theme-root .shared-detail{color:var(--muted)!important}
+.theme-root .line-item-copy small:empty{display:none}
+.theme-root .line-table-row .line-name{font-weight:500}
