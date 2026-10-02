@@ -771,3 +771,56 @@
 @media (max-width:520px){.paycheck-model-page>.paycheck-kpis{grid-template-columns:1fr}}
 
 .income-actions{position:relative;align-self:center}.income-actions summary{list-style:none;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;border:1.5px solid var(--ink);font:700 20px/1 'DM Mono',monospace}.income-actions summary::-webkit-details-marker{display:none}.income-actions summary:hover{background:var(--ink);color:var(--paper)}.income-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:4;min-width:110px;padding:6px;background:var(--paper);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}.income-menu .button{width:100%;justify-content:flex-start}
+
+/* Keep the income editor readable: identity, compensation, then plan status. */
+.theme-root .income-row{
+  display:block;
+  position:relative;
+  padding:0;
+  overflow:visible;
+  border:1px solid var(--line);
+  border-left:4px solid var(--accent);
+  border-radius:8px;
+  background:color-mix(in srgb,var(--paper) 92%,var(--page-bg))!important;
+  box-shadow:4px 4px 0 color-mix(in srgb,var(--shadow-color) 13%,transparent);
+}
+.theme-root .income-card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  padding:18px 64px 14px 20px;
+  border-bottom:1px solid var(--line);
+}
+.theme-root .income-source-kicker{margin:0 0 4px;color:var(--muted);font:10px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.theme-root .income-card-head h3{margin:0 0 7px;font-size:19px;letter-spacing:-.04em}
+.theme-root .income-source-status{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--line);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+.theme-root .income-source-status.is-included{color:var(--positive);border-color:color-mix(in srgb,var(--positive) 48%,var(--line));background:color-mix(in srgb,var(--positive) 8%,var(--paper))}
+.theme-root .income-source-status.is-excluded{color:var(--muted);background:color-mix(in srgb,var(--ink) 4%,var(--paper))}
+.theme-root .income-card-head .income-actions{position:absolute;top:17px;right:18px;align-self:auto}
+.theme-root .income-card-head .income-actions summary{width:36px;height:36px}
+.theme-root .income-fields-primary{display:grid;grid-template-columns:1.15fr .9fr 1.15fr .9fr;gap:14px;align-items:start;padding:18px 20px 12px}
+.theme-root .income-fields-primary>label,.theme-root .income-compensation-field>label,.theme-root .income-fields-secondary>label{display:grid;gap:6px;min-width:0;font-size:11px;font-weight:700}
+.theme-root .income-compensation-field{display:grid;gap:8px;min-width:0}
+.theme-root .income-toggle{display:flex!important;align-items:center;gap:8px;min-height:25px;font-size:11px;font-weight:600!important;color:var(--muted)}
+.theme-root .income-toggle input{width:16px!important;height:16px;flex:0 0 auto;padding:0}
+.theme-root .income-fields-secondary{display:grid;grid-template-columns:repeat(3,minmax(150px,220px));gap:14px;padding:0 20px 14px}
+.theme-root .income-card-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 20px 16px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--ink) 3%,transparent)}
+.theme-root .income-card-footer strong{font:600 13px 'DM Mono',monospace;text-align:right;white-space:nowrap}
+.theme-root .income-menu{top:calc(100% + 7px);right:0;min-width:132px;z-index:10}
+.theme-root .income-menu .button.danger-solid{width:100%;color:#fff!important;background:#c43f2b!important;border-color:#8f2416!important;box-shadow:2px 2px 0 #7b2115!important}
+.theme-root .income-menu .button.danger-solid:hover{background:#a92f20!important;color:#fff!important}
+.confirm-backdrop{position:fixed!important;inset:0!important;z-index:9999!important;place-items:center!important}
+.confirm-dialog{margin:auto;max-height:calc(100vh - 40px);overflow:auto}
+@media (max-width:900px){
+  .theme-root .income-fields-primary{grid-template-columns:1fr 1fr}
+  .theme-root .income-compensation-field{grid-column:span 1}
+  .theme-root .income-fields-secondary{grid-template-columns:repeat(2,minmax(150px,1fr))}
+}
+@media (max-width:520px){
+  .theme-root .income-card-head{padding-left:15px;padding-right:58px}
+  .theme-root .income-fields-primary,.theme-root .income-fields-secondary{grid-template-columns:1fr;padding-left:15px;padding-right:15px}
+  .theme-root .income-fields-secondary{padding-top:0}
+  .theme-root .income-card-footer{align-items:flex-start;flex-direction:column;padding-left:15px;padding-right:15px}
+  .theme-root .income-card-footer strong{text-align:left;white-space:normal}
+}
