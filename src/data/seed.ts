@@ -36,7 +36,7 @@ const makeItems = (amounts: Record<string, number>, names: Record<string, string
 
 const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, payType: 'salary', payFrequency: 'biweekly', annualSalary: salary, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }, { id: 'second-job', name: 'Second Job', payType: 'hourly', payFrequency: 'weekly', hourlyRate: 0, regularHoursPerWeek: 0, paidWeeksPerYear: 52, annualGross: 0, annualNet: 0, netRetention: 0, active: false, overtime: { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }]
 
-const workbookPaycheckModel: PaycheckModel = { grossPayPerPaycheck: 4807.692307692308, paychecksPerYear: 26, retirement401kPerPaycheck: 432.6923076923077, fsaMedicalPerPaycheck: 46.15, criticalIllnessPerPaycheck: 7.26, healthPremiumPerPaycheck: 241.44, otherPreTaxBenefitsPerPaycheck: 0, postTaxDeductionsPerPaycheck: 23.47 }
+const workbookPaycheckModel: PaycheckModel = { taxBasis: 'workbook', grossPayPerPaycheck: 4807.692307692308, paychecksPerYear: 26, retirement401kPerPaycheck: 432.6923076923077, fsaMedicalPerPaycheck: 46.15, criticalIllnessPerPaycheck: 7.26, healthPremiumPerPaycheck: 241.44, otherPreTaxBenefitsPerPaycheck: 0, postTaxDeductionsPerPaycheck: 23.47 }
 
 const debtRecords: DebtRecord[] = [
   { id: 'mortgage-debt', debtor: 'Altra Federal Credit Union', description: '1st Mortgage | 1230 Redfield St', minimumMonthly: 1218.59, dueDay: 1, balance: 151948.06 },

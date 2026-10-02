@@ -79,6 +79,7 @@ export interface IncomeSource {
 }
 
 export interface PaycheckModel {
+  taxBasis?: 'workbook' | 'taxProfile'
   grossPayPerPaycheck: number
   paychecksPerYear: number
   retirement401kPerPaycheck: number

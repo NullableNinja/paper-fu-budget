@@ -28,6 +28,8 @@ export interface TaxEstimate {
   assumptions: string[]
 }
 
+export type TaxCalculationMode = 'paycheck' | 'return'
+
 type Bracket = [number, number, number, number]
 
 const federalBrackets: Record<FilingStatus, Bracket[]> = {
@@ -115,9 +117,22 @@ export const sourceGrossBreakdown = (source: IncomeSource) => {
   return { baseGross: base, overtimeGross: Math.max(0, annualGross - base), annualGross }
 }
 
-export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
-  const profile = scenario.taxProfile ?? defaultTaxProfile(scenario.salary)
+export const calculateW2Taxes = (scenario: BudgetScenario, mode: TaxCalculationMode = 'paycheck'): TaxEstimate => {
+  const sourceProfile = scenario.taxProfile ?? defaultTaxProfile(scenario.salary)
   const paycheckModel = scenario.paycheckModel
+  const workbookBasis = mode === 'paycheck' && !!paycheckModel && paycheckModel.taxBasis !== 'taxProfile'
+  const profile = workbookBasis ? {
+    ...sourceProfile,
+    filingStatus: 'single' as const,
+    spouseWages: 0,
+    qualifyingChildren: 0,
+    otherDependents: 0,
+    taxpayer65OrOlder: false,
+    spouse65OrOlder: false,
+    otherAnnualIncome: 0,
+    additionalFederalCredits: 0,
+    additionalStateCredits: 0,
+  } : sourceProfile
   const paychecksPerYear = paycheckModel?.paychecksPerYear ?? scenario.paychecksPerYear
   const activeSources = scenario.incomeSources.filter((source) => source.active)
   const otherSourceWages = activeSources.filter((source) => source.id !== 'primary-income').reduce((sum, source) => sum + annualGrossForSource(source), 0)
@@ -150,11 +165,11 @@ export const calculateW2Taxes = (scenario: BudgetScenario): TaxEstimate => {
   let primaryAnnualNet = annualNet
   if (primaryGrossWages > 0 && spouseGrossWages > 0) {
     const spouseOnlyScenario: BudgetScenario = { ...scenario, salary: 0, paycheckModel: undefined, incomeSources: [], taxProfile: { ...profile, retirement401kRate: 0, annualPreTaxBenefits: 0, annualFicaExemptBenefits: 0, annualPostTaxDeductions: 0 } }
-    const spouseOnlyTaxes = calculateW2Taxes(spouseOnlyScenario).totalTaxes
+    const spouseOnlyTaxes = calculateW2Taxes(spouseOnlyScenario, mode).totalTaxes
     const primaryTaxShare = Math.max(0, totalTaxes - spouseOnlyTaxes)
     primaryAnnualNet = primaryGrossWages - annualRetirement401k - annualPreTaxBenefits - primaryTaxShare - annualPostTaxDeductions
   }
-  return { grossWages, primaryGrossWages, spouseGrossWages, grossIncome, retirement401k: annualRetirement401k, federalAdjustedGrossIncome, federalStandardDeduction: federalStandard, federalTaxableIncome, federalIncomeTax, childTaxCredit: childrenCredit, wisconsinStandardDeduction: wiStandard, wisconsinExemptions: wiExemptions, wisconsinTaxableIncome: wiTaxableIncome, wisconsinIncomeTax, socialSecurity, medicare, additionalMedicare, totalTaxes, postTaxDeductions: annualPostTaxDeductions, annualNet, paycheckNet: annualNet / paychecksPerYear, primaryAnnualNet, primaryPaycheckNet: primaryAnnualNet / paychecksPerYear, effectiveTaxRate: grossWages ? totalTaxes / grossWages : 0, assumptions: ['2026 federal brackets and standard deductions', 'Wisconsin 2026 resident rates and standard deduction', 'Social Security wage base of $184,500', 'Paycheck inputs are entered as actual per-check dollar amounts; only taxes are estimated', 'Income sources are this person\'s jobs; spouse wages are tax-profile-only when filing jointly', 'Employer withholding and credits may differ from final return liability'] }
+  return { grossWages, primaryGrossWages, spouseGrossWages, grossIncome, retirement401k: annualRetirement401k, federalAdjustedGrossIncome, federalStandardDeduction: federalStandard, federalTaxableIncome, federalIncomeTax, childTaxCredit: childrenCredit, wisconsinStandardDeduction: wiStandard, wisconsinExemptions: wiExemptions, wisconsinTaxableIncome: wiTaxableIncome, wisconsinIncomeTax, socialSecurity, medicare, additionalMedicare, totalTaxes, postTaxDeductions: annualPostTaxDeductions, annualNet, paycheckNet: annualNet / paychecksPerYear, primaryAnnualNet, primaryPaycheckNet: primaryAnnualNet / paychecksPerYear, effectiveTaxRate: grossWages ? totalTaxes / grossWages : 0, assumptions: [workbookBasis ? 'Paycheck model uses the Northern Trust workbook single-filer/no-credit tax basis' : 'Tax profile filing status, dependents, credits, and spouse wages', '2026 federal brackets and standard deductions', 'Wisconsin 2026 resident rates and standard deduction', 'Social Security wage base of $184,500', 'Paycheck inputs are entered as actual per-check dollar amounts; only taxes are estimated', 'Income sources are this person\'s jobs; spouse wages are tax-profile-only when filing jointly', 'Employer withholding and credits may differ from final return liability'] }
 }
 
 export const calculateSourceNetContribution = (scenario: BudgetScenario, sourceId: string): number => {

@@ -50,11 +50,23 @@ describe('budget calculation engine', () => {
 
   it('applies filing status and child credit assumptions', () => {
     const base = structuredClone(initialSnapshot.scenarios[0])
-    const single = calculateW2Taxes(base)
-    const joint = calculateW2Taxes({ ...base, taxProfile: { ...base.taxProfile, filingStatus: 'mfj' } })
-    const withChild = calculateW2Taxes({ ...base, taxProfile: { ...base.taxProfile, qualifyingChildren: 1 } })
+    const single = calculateW2Taxes(base, 'return')
+    const joint = calculateW2Taxes({ ...base, taxProfile: { ...base.taxProfile, filingStatus: 'mfj' } }, 'return')
+    const withChild = calculateW2Taxes({ ...base, taxProfile: { ...base.taxProfile, qualifyingChildren: 1 } }, 'return')
     expect(joint.federalIncomeTax).toBeLessThan(single.federalIncomeTax)
     expect(withChild.federalIncomeTax).toBeCloseTo(single.federalIncomeTax - 2200)
+  })
+
+  it('keeps the personal paycheck on the workbook tax basis while preserving MFJ return context', () => {
+    const scenario = structuredClone(initialSnapshot.scenarios[0])
+    scenario.taxProfile = { ...scenario.taxProfile, filingStatus: 'mfj', qualifyingChildren: 1 }
+    const paycheck = calculateW2Taxes(scenario)
+    const taxReturn = calculateW2Taxes(scenario, 'return')
+    expect(paycheck.federalIncomeTax).toBeCloseTo(14508.458, 3)
+    expect(paycheck.totalTaxes).toBeCloseTo(28273.158454, 3)
+    expect(paycheck.primaryAnnualNet / 12).toBeCloseTo(6433.3767955, 6)
+    expect(taxReturn.federalIncomeTax).toBeLessThan(paycheck.federalIncomeTax)
+    expect(taxReturn.primaryAnnualNet).toBeGreaterThan(paycheck.primaryAnnualNet)
   })
 
   it('handles FICA limits and additional Medicare', () => {
@@ -96,12 +108,13 @@ describe('budget calculation engine', () => {
   it('keeps spouse wages tax-only and out of the personal budget', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
     scenario.taxProfile = { ...scenario.taxProfile, filingStatus: 'mfj', spouseWages: 57235.1, qualifyingChildren: 1 }
-    const estimate = calculateW2Taxes(scenario)
+    const estimate = calculateW2Taxes(scenario, 'return')
+    const paycheck = calculateW2Taxes(scenario)
     const totals = calculateScenario(scenario)
     expect(estimate.grossWages).toBeCloseTo(182235.1)
     expect(estimate.primaryGrossWages).toBeCloseTo(125000)
     expect(estimate.spouseGrossWages).toBeCloseTo(57235.1)
-    expect(totals.monthlyIncome).toBeCloseTo(estimate.primaryAnnualNet / 12)
+    expect(totals.monthlyIncome).toBeCloseTo(paycheck.primaryAnnualNet / 12)
     expect(totals.monthlyIncome).toBeLessThan(estimate.annualNet / 12)
   })
 })

@@ -27,7 +27,8 @@ export const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({
       return { ...withoutMember, payType: source.payType ?? 'salary', payFrequency, annualSalary: source.annualSalary ?? source.annualGross, overtime: source.overtime ? { ...source.overtime, hoursPerPayPeriod: source.overtime.hoursPerPayPeriod ?? (source.overtime.hoursPerYear ?? 0) / periods } : { enabled: false, hoursPerPayPeriod: 0, multiplier: 1.5 } }
     })
     const { householdMembers: _householdMembers, ...withoutHouseholdMembers } = scenario as BudgetScenario & { householdMembers?: unknown }
-    return { ...withoutHouseholdMembers, items, incomeSources: sources, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) }
+    const paycheckModel = scenario.paycheckModel ? { ...scenario.paycheckModel, taxBasis: scenario.paycheckModel.taxBasis ?? 'workbook' } : seed?.paycheckModel ? { ...seed.paycheckModel } : undefined
+    return { ...withoutHouseholdMembers, items, incomeSources: sources, paycheckModel, paychecksPerYear: paycheckModel?.paychecksPerYear ?? scenario.paychecksPerYear, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) }
   }),
 })
 
