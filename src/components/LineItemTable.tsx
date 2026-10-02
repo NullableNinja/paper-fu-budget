@@ -4,6 +4,7 @@ import { frequencyToMonthly, formatCurrency, monthlyToPeriod, type BudgetPeriod 
 
 const kinds: Array<ItemKind | 'all'> = ['all', 'fixed', 'variable', 'debt', 'savings', 'discretionary']
 type OwnershipFilter = 'all' | 'shared' | 'individual'
+type CategoryOrder = 'alphabetical' | 'monthly' | 'ramsey'
 const linePeriods: Array<{ value: BudgetPeriod; label: string }> = [
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
@@ -15,6 +16,24 @@ const linePeriods: Array<{ value: BudgetPeriod; label: string }> = [
 const sharePercent = (item: BudgetItem) => Math.min(100, Math.max(1, item.sharedSharePercent ?? 50))
 const householdAmount = (item: BudgetItem) => item.amountMonthly / (sharePercent(item) / 100)
 const hasDueDate = (item: BudgetItem) => Boolean(item.dueDay || item.dueUponReceipt)
+const ramseyPriority = [
+  ['housing', 'utilities', 'rent', 'mortgage'],
+  ['food', 'grocery'],
+  ['transportation', 'vehicle', 'auto', 'gas'],
+  ['medical', 'health', 'dental', 'prescription'],
+  ['insurance'],
+  ['debt', 'loan', 'bankruptcy', 'chapter 13'],
+  ['savings', 'emergency'],
+  ['dependent care', 'child'],
+  ['personal'],
+  ['entertainment'],
+  ['misc'],
+]
+const ramseyRank = (category: string) => {
+  const normalized = category.toLowerCase()
+  const index = ramseyPriority.findIndex((terms) => terms.some((term) => normalized.includes(term)))
+  return index === -1 ? ramseyPriority.length : index
+}
 
 export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYear = 26 }: { items: BudgetItem[]; onSelect?: (item: BudgetItem) => void; compact?: boolean; paychecksPerYear?: number }) => {
   const [query, setQuery] = useState('')
@@ -24,6 +43,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
   const [tag, setTag] = useState('all')
   const [showInactive, setShowInactive] = useState(false)
   const [showSharedDetails, setShowSharedDetails] = useState(true)
+  const [categoryOrder, setCategoryOrder] = useState<CategoryOrder>('alphabetical')
   const categories = useMemo(() => Array.from(new Set(items.map((item) => item.category))).sort(), [items])
   const tags = useMemo(() => Array.from(new Set(items.flatMap((item) => item.tags ?? []))).sort(), [items])
   const sharedCount = items.filter((item) => item.shared && item.active).length
@@ -34,10 +54,21 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
     const searchableTags = (item.tags ?? []).join(' ').toLowerCase()
     return (showInactive || item.active) && ownershipMatches && tagMatches && (!query || `${text} ${searchableTags}`.includes(query.toLowerCase())) && (kind === 'all' || item.kind === kind) && (category === 'all' || item.category === category)
   }), [items, query, kind, category, ownership, tag, showInactive])
-  const grouped = useMemo(() => Array.from(new Set(filtered.map((item) => item.category))).sort().map((group) => ({
-    category: group,
-    items: filtered.filter((item) => item.category === group),
-  })), [filtered])
+  const grouped = useMemo(() => {
+    const groups = Array.from(new Set(filtered.map((item) => item.category))).map((group) => ({
+      category: group,
+      items: filtered.filter((item) => item.category === group),
+    }))
+    return groups.sort((a, b) => {
+      if (categoryOrder === 'monthly') {
+        const aTotal = a.items.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0)
+        const bTotal = b.items.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0)
+        return bTotal - aTotal || a.category.localeCompare(b.category)
+      }
+      if (categoryOrder === 'ramsey') return ramseyRank(a.category) - ramseyRank(b.category) || a.category.localeCompare(b.category)
+      return a.category.localeCompare(b.category)
+    })
+  }, [filtered, categoryOrder])
   const amountFor = (item: BudgetItem, period: typeof linePeriods[number]) => formatCurrency(monthlyToPeriod(frequencyToMonthly(item.amountMonthly, item.frequency), period.value, paychecksPerYear))
   const subtotalFor = (groupItems: BudgetItem[], period: typeof linePeriods[number]) => formatCurrency(monthlyToPeriod(groupItems.filter((item) => item.active).reduce((sum, item) => sum + frequencyToMonthly(item.amountMonthly, item.frequency), 0), period.value, paychecksPerYear), true)
 
@@ -49,7 +80,7 @@ export const LineItemTable = ({ items, onSelect, compact = false, paychecksPerYe
       <select aria-label="Filter by ownership" value={ownership} onChange={(event) => setOwnership(event.target.value as OwnershipFilter)}><option value="all">All ownership</option><option value="shared">Shared only</option><option value="individual">My expenses</option></select>
       <select aria-label="Filter by tag" value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">All tags</option>{tags.map((value) => <option key={value} value={value}>{value}</option>)}</select>
     </div>
-    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>{sharedCount ? `${sharedCount} shared · amounts shown are your share` : 'Mark split bills as shared in the editor'}</span><label className="check-row"><input type="checkbox" checked={showSharedDetails} onChange={(event) => setShowSharedDetails(event.target.checked)} /> Show shared details</label><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label></div>
+    <div className="line-summary"><span>Showing <b>{filtered.length}</b> of <b>{items.length}</b> lines</span><span>{sharedCount ? `${sharedCount} shared · amounts shown are your share` : 'Mark split bills as shared in the editor'}</span><label className="line-sort-control">Category order<select aria-label="Category order" value={categoryOrder} onChange={(event) => setCategoryOrder(event.target.value as CategoryOrder)}><option value="alphabetical">Alphabetical</option><option value="monthly">Largest monthly first</option><option value="ramsey">Ramsey priority</option></select></label><label className="check-row"><input type="checkbox" checked={showSharedDetails} onChange={(event) => setShowSharedDetails(event.target.checked)} /> Show shared details</label><label className="check-row"><input type="checkbox" checked={showInactive} onChange={(event) => setShowInactive(event.target.checked)} /> Show inactive</label>{categoryOrder === 'ramsey' && <span className="sort-note">Essentials → debt → savings → discretionary</span>}</div>
     <div className="line-table-head global-line-head"><span>Line item</span><span>Due</span><span>Type</span><span>Frequency</span>{linePeriods.map((period) => <span key={period.value}>{period.label}</span>)}<span>Status</span></div>
     <div className="line-table-body">{grouped.map(({ category: group, items: groupItems }) => <section className="line-category" key={group}>
       <div className="line-category-head"><div><span className="eyebrow">Category</span><h3>{group}</h3></div><span>{groupItems.filter((item) => item.active).length} active lines</span></div>

@@ -270,6 +270,9 @@
 }
 .theme-root .line-name{display:block;font-size:13px;font-weight:500;line-height:1.25}
 .theme-root .line-item-copy{min-width:0}
+.theme-root .line-sort-control{display:flex;align-items:center;gap:7px;color:var(--muted);white-space:nowrap}
+.theme-root .line-sort-control select{width:auto;min-width:145px;padding:6px 8px;font:inherit;color:var(--ink)}
+.theme-root .sort-note{color:var(--accent);font-weight:600}
 .theme-root .line-due{font:10px 'DM Mono',monospace;color:var(--muted);white-space:nowrap}
 .theme-root .late-label{color:var(--negative);font-weight:700}
 .theme-root .line-subtotal-row{font-size:12px;font-weight:700;padding:12px 4px;background:color-mix(in srgb,var(--positive) 10%,transparent)}
