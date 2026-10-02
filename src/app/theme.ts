@@ -56,11 +56,21 @@ export const themeCssVars = (theme: ThemeConfig): CSSProperties => {
   const line = theme.mode === 'dark' ? '#344154' : '#d9d2c6'
   const muted = theme.mode === 'dark' ? '#a8b0b7' : '#6d6b68'
   const navInk = contrastColor(theme.navColor)
+  const mint = theme.mode === 'dark' ? '#315f59' : '#9cc8b2'
+  const positive = theme.mode === 'dark' ? '#9be6b5' : '#39795b'
+  const negative = theme.mode === 'dark' ? '#ffad99' : '#b34632'
   return {
     '--ink': ink,
     '--paper': paper,
     '--line': line,
     '--muted': muted,
+    '--mint': mint,
+    '--positive': positive,
+    '--negative': negative,
+    '--chart-1': theme.mode === 'dark' ? '#8fa9ff' : '#151b27',
+    '--chart-2': theme.mode === 'dark' ? '#ff9c83' : '#e17a62',
+    '--chart-3': theme.mode === 'dark' ? '#83d4b4' : '#9cc8b2',
+    '--chart-4': theme.mode === 'dark' ? '#e8c677' : '#e4b86c',
     '--page-bg': theme.backgroundColor,
     '--nav-bg': theme.navColor,
     '--nav-ink': navInk,

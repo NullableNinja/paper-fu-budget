@@ -58,3 +58,24 @@
 .theme-root .scenario-tools>.button{align-self:end}
 @media (max-width:1100px){.theme-root .scenario-tools{grid-template-columns:1fr 1fr}.theme-root .scenario-tool{grid-column:span 2}}
 @media (max-width:900px){.theme-root .line-category-head{align-items:flex-start;flex-direction:column;gap:7px}.theme-root .bills-panel .panel-head{align-items:flex-start;flex-direction:column}.theme-root .bill-actions{justify-content:flex-start}}
+
+/* Semantic tokens and layout corrections for the real dark theme. */
+.theme-root{--surface-raised:color-mix(in srgb,var(--paper) 94%,var(--page-bg));--surface-inset:color-mix(in srgb,var(--page-bg) 48%,var(--paper));--track:color-mix(in srgb,var(--ink) 13%,var(--paper));--focus-ring:var(--accent);--warning:#d8a742;--warning-surface:color-mix(in srgb,var(--warning) 20%,var(--paper));--negative-surface:color-mix(in srgb,var(--negative) 18%,var(--paper));--positive-surface:color-mix(in srgb,var(--positive) 18%,var(--paper))}
+.theme-root .positive{color:var(--positive)!important}.theme-root .negative{color:var(--negative)!important}
+.theme-root .reconciliation{background:var(--warning-surface)}
+.theme-root .bar-track{background:var(--track)}
+.theme-root .line-table-row:hover,.theme-root .item-row:hover,.theme-root .debt-row:hover{background:var(--surface-inset)}
+.theme-root .alert.warning{background:var(--warning-surface);border-color:color-mix(in srgb,var(--warning) 55%,var(--line))}.theme-root .alert.error{background:var(--negative-surface);border-color:color-mix(in srgb,var(--negative) 55%,var(--line))}.theme-root .alert.success{background:var(--positive-surface);border-color:color-mix(in srgb,var(--positive) 55%,var(--line))}
+.theme-root .paycheck-hero.positive-state{background:var(--positive-surface)}.theme-root .paycheck-hero.negative-state{background:var(--negative-surface)}
+.theme-root .sidebar{position:sticky;top:0;height:100vh;overflow:auto}
+.theme-root .money,.theme-root .metric-card strong,.theme-root .paycheck-hero strong,.theme-root .paycheck-remaining b,.theme-root .big-number b,.theme-root .flow b,.theme-root .allocation-list b,.theme-root .line-table-row strong,.theme-root .bill-table-row strong,.theme-root .scenario-stat b{font-variant-numeric:tabular-nums lining-nums}
+.theme-root :focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}.theme-root .button:disabled{cursor:not-allowed;opacity:.45;transform:none;box-shadow:none}
+.theme-root .eyebrow{font-size:10px;line-height:1.25}
+.theme-root{overflow-x:clip;overflow-y:visible}
+.theme-root .panel:after,.theme-root .metric-card:after{display:none}
+.theme-root .panel{box-shadow:0 7px 22px color-mix(in srgb,var(--shadow-color) 8%,transparent)}
+.theme-root .metric-card{box-shadow:0 7px 18px color-mix(in srgb,var(--shadow-color) 12%,transparent)}
+.theme-root .hero,.theme-root .paycheck-hero{box-shadow:0 14px 30px color-mix(in srgb,var(--shadow-color) 16%,transparent)}
+.theme-root .topbar{position:sticky;top:0;z-index:4;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+@media (min-width:761px) and (max-width:980px){.theme-root .app-shell{grid-template-columns:220px 1fr}.theme-root .sidebar{display:flex}.theme-root .mobile-nav{display:none}.theme-root .topbar{padding:22px 24px 18px}.theme-root .content{padding:24px 24px 60px}.theme-root .page-grid{grid-template-columns:1fr}.theme-root .metrics{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:700px){.theme-root .topbar{align-items:stretch;flex-direction:column;gap:16px}.theme-root .scenario-select{width:100%}.theme-root .page-intro{align-items:flex-start;flex-direction:column}.theme-root .line-table-head{display:none}.theme-root .line-table-body{min-width:0}.theme-root .line-table-row{grid-template-columns:1fr auto;gap:8px}.theme-root .line-table-row>span:nth-child(2),.theme-root .line-table-row>span:nth-child(3){display:none}.theme-root .line-table-row strong{grid-column:2;grid-row:1}.theme-root .line-table-row>span:last-child{grid-column:2;grid-row:2;text-align:right}.theme-root .scenario-tools{grid-template-columns:1fr}.theme-root .scenario-tool{grid-column:auto}.theme-root .scenario-tool>div{flex-wrap:wrap}.theme-root .scenario-tool .button{margin-left:0;width:100%}}
