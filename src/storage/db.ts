@@ -6,7 +6,16 @@ const DB_NAME = 'paper-fu-budget'
 const STORE = 'snapshots'
 const KEY = 'current'
 
-const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({ ...snapshot, scenarios: snapshot.scenarios.map((scenario) => ({ ...scenario, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) })) })
+const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({
+  ...snapshot,
+  scenarios: snapshot.scenarios.map((scenario) => {
+    const seed = initialSnapshot.scenarios.find((candidate) => candidate.id === scenario.id)
+    const existingIds = new Set(scenario.items.map((item) => item.id))
+    const addedItems = seed?.items.filter((item) => !existingIds.has(item.id)).map((item) => ({ ...item })) ?? []
+    const items = [...scenario.items, ...addedItems].map((item) => scenario.id === 'salary-125k' && item.id === 'chapter-13' && item.amountMonthly === 527.995 ? { ...item, amountMonthly: 1278, active: true } : item)
+    return { ...scenario, items, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) }
+  }),
+})
 
 const openDb = (): Promise<IDBDatabase> => new Promise((resolve, reject) => {
   const request = indexedDB.open(DB_NAME, 1)

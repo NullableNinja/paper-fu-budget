@@ -27,13 +27,16 @@ export const calculateScenario = (scenario: BudgetScenario): ScenarioTotals => {
   const totalOutflow = required + savings + discretionary
   const monthlySurplus = monthlyIncome - totalOutflow
   const paycheckIncome = annualIncome / scenario.paychecksPerYear
-  const paycheckAllocation = totalOutflow * 12 / scenario.paychecksPerYear
-  return { monthlyIncome, annualIncome, paycheckIncome, savings, fixed, variable, debt, discretionary, required, totalOutflow, monthlySurplus, paycheckAllocation, paycheckSurplus: paycheckIncome - paycheckAllocation, debtBalance: scenario.debts.reduce((sum, debtRecord) => sum + debtRecord.balance, 0) }
+  const paycheckBills = required * 12 / scenario.paychecksPerYear
+  const paycheckSavings = savings * 12 / scenario.paychecksPerYear
+  const paycheckDiscretionary = discretionary * 12 / scenario.paychecksPerYear
+  const paycheckAllocation = paycheckBills + paycheckSavings + paycheckDiscretionary
+  return { monthlyIncome, annualIncome, paycheckIncome, savings, fixed, variable, debt, discretionary, required, totalOutflow, monthlySurplus, paycheckAllocation, paycheckSurplus: paycheckIncome - paycheckAllocation, paycheckBills, paycheckSavings, paycheckDiscretionary, debtBalance: scenario.debts.reduce((sum, debtRecord) => sum + debtRecord.balance, 0) }
 }
 
 export const nextPaycheck = (scenario: BudgetScenario) => {
   const totals = calculateScenario(scenario)
-  return { income: totals.paycheckIncome, bills: totals.required * 12 / scenario.paychecksPerYear, savings: totals.savings * 12 / scenario.paychecksPerYear, discretionary: totals.discretionary * 12 / scenario.paychecksPerYear, remaining: totals.paycheckSurplus }
+  return { income: totals.paycheckIncome, bills: totals.paycheckBills, savings: totals.paycheckSavings, discretionary: totals.paycheckDiscretionary, allocation: totals.paycheckAllocation, remaining: totals.paycheckSurplus }
 }
 
 export const formatCurrency = (value: number, compact = false) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: compact ? 0 : 2 }).format(value)

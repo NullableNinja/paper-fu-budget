@@ -97,5 +97,8 @@ export interface ScenarioTotals {
   monthlySurplus: number
   paycheckAllocation: number
   paycheckSurplus: number
+  paycheckBills: number
+  paycheckSavings: number
+  paycheckDiscretionary: number
   debtBalance: number
 }

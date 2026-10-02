@@ -26,6 +26,13 @@ describe('budget calculation engine', () => {
     expect(pay.remaining).toBeCloseTo(pay.income - pay.bills - pay.savings - pay.discretionary)
   })
 
+  it('matches the Northern Trust 125K workbook reconciliation', () => {
+    const scenario = initialSnapshot.scenarios[0]
+    const totals = calculateScenario(scenario)
+    expect(totals.monthlySurplus).toBeCloseTo(17.9042955, 4)
+    expect(totals.paycheckSurplus).toBeCloseTo(8.263521, 4)
+  })
+
   it('responds to scenario line-item edits', () => {
     const scenario = structuredClone(initialSnapshot.scenarios[0])
     const before = calculateScenario(scenario)
