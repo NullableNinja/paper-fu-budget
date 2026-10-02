@@ -637,6 +637,14 @@
   background:var(--workbook-total-bg)!important;
 }
 
+/* Shared rows keep their ownership cue without disabling the ledger stripe. */
+.theme-root .line-category .line-table-row.shared-row{
+  background:color-mix(in srgb,var(--shared) 5%,var(--paper))!important;
+}
+.theme-root .line-category .line-table-row.shared-row.row-alt{
+  background:color-mix(in srgb,var(--shared) 5%,color-mix(in srgb,var(--ink) 5%,var(--paper)))!important;
+}
+
 .income-row{grid-template-columns:repeat(4,minmax(150px,1fr))}
 @media (max-width:900px){.income-row{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.income-row{grid-template-columns:1fr}}
