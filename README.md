@@ -23,7 +23,7 @@ npm run dev
 
 ## Authentication
 
-The frontend does not contain the requested temporary password and does not implement insecure client-only password validation. Set `VITE_AUTH_API_URL` to a real server-side authentication service implementing:
+The GitHub Pages demo currently uses a temporary client-side password gate so the dashboard is immediately usable. The temporary password is visible in `src/services/auth.ts` by design. Replace it with a real server-side authentication service before treating the app as secure. A real service should implement:
 
 ```text
 POST /auth/login
