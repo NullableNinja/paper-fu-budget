@@ -90,7 +90,7 @@ export const annualGrossForSource = (source: IncomeSource): number => {
   const overtime = source.overtime
   const periods = payPeriodsPerYear(source)
   const overtimeHours = overtime?.enabled ? Math.max(0, overtime.hoursPerPayPeriod ?? (overtime.hoursPerYear ?? 0) / periods) : 0
-  const multiplier = overtime?.enabled ? Math.max(0, overtime.multiplier || 1) : 0
+  const multiplier = overtime?.enabled ? 1.5 : 0
   if (source.payType === 'hourly') {
     const rate = Math.max(0, source.hourlyRate ?? 0)
     const regularHours = Math.max(0, source.regularHoursPerWeek ?? 0)

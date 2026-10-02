@@ -74,7 +74,7 @@ describe('budget calculation engine', () => {
   })
 
   it('adds per-pay-period overtime to a salaried source', () => {
-    const source = { id: 'salary', name: 'Salary job', payType: 'salary' as const, payFrequency: 'biweekly' as const, annualSalary: 80000, annualGross: 80000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerPayPeriod: 10, multiplier: 1.5 } }
+    const source = { id: 'salary', name: 'Salary job', payType: 'salary' as const, payFrequency: 'biweekly' as const, annualSalary: 80000, annualGross: 80000, annualNet: 0, netRetention: 0, active: true, overtime: { enabled: true, hoursPerPayPeriod: 10, multiplier: 2 } }
     expect(annualGrossForSource(source)).toBeCloseTo(95000, 3)
   })
 
