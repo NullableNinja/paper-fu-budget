@@ -29,7 +29,10 @@ describe('budget calculation engine', () => {
   it('matches the Northern Trust 125K workbook reconciliation', () => {
     const scenario = initialSnapshot.scenarios[0]
     const totals = calculateScenario(scenario)
+    expect(totals.monthlyIncome).toBeCloseTo(6433.3767955, 6)
+    expect(totals.totalOutflow).toBeCloseTo(6415.4725, 6)
     expect(totals.monthlySurplus).toBeCloseTo(17.9042955, 4)
+    expect(totals.paycheckAllocation).toBeCloseTo(2960.9873077, 6)
     expect(totals.paycheckSurplus).toBeCloseTo(8.263521, 4)
   })
 

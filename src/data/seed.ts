@@ -26,7 +26,13 @@ const withAmounts = (id: string, amounts: Record<string, number>, name?: string)
   return { ...source, name: name ?? source.name, amountMonthly, active: amountMonthly > 0 }
 }
 
-const makeItems = (amounts: Record<string, number>, names: Record<string, string> = {}) => baseItems.map((source) => withAmounts(source.id, amounts, names[source.id]))
+// Purple rows in the workbook are shared household expenses. The stored amount
+// is Thomas's share, so keep the split visible without changing the calculation.
+const sharedItemIds = new Set(['mortgage-1', 'mortgage-2', 'xcel', 'brightspeed', 'mobile', 'orkin', 'water', 'insurance', 'groceries', 'medical'])
+const makeItems = (amounts: Record<string, number>, names: Record<string, string> = {}) => baseItems.map((source) => {
+  const next = withAmounts(source.id, amounts, names[source.id])
+  return sharedItemIds.has(source.id) ? { ...next, shared: true, sharedSharePercent: 50 } : next
+})
 
 const incomes = (salary: number, annualNet: number, name: string): IncomeSource[] => [{ id: 'primary-income', name, annualGross: salary, annualNet, netRetention: annualNet / salary, active: true }, { id: 'second-job', name: 'Second Job', annualGross: 0, annualNet: 0, netRetention: annualNet / salary, active: false }]
 

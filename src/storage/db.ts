@@ -14,7 +14,11 @@ const migrateSnapshot = (snapshot: AppSnapshot): AppSnapshot => ({
     const seed = initialSnapshot.scenarios.find((candidate) => candidate.id === scenario.id)
     const existingIds = new Set(scenario.items.map((item) => item.id))
     const addedItems = seed?.items.filter((item) => !existingIds.has(item.id)).map((item) => ({ ...item })) ?? []
-    const items = [...scenario.items, ...addedItems].map((item) => scenario.id === 'salary-125k' && item.id === 'chapter-13' && item.amountMonthly === 527.995 ? { ...item, amountMonthly: 1278, active: true } : item)
+    const items = [...scenario.items, ...addedItems].map((item) => {
+      const seeded = seed?.items.find((candidate) => candidate.id === item.id)
+      const withWorkbookContext = item.shared === undefined && seeded?.shared ? { ...item, shared: true, sharedSharePercent: seeded.sharedSharePercent } : item
+      return scenario.id === 'salary-125k' && withWorkbookContext.id === 'chapter-13' && withWorkbookContext.amountMonthly === 527.995 ? { ...withWorkbookContext, amountMonthly: 1278, active: true } : withWorkbookContext
+    })
     return { ...scenario, items, taxProfile: scenario.taxProfile ?? defaultTaxProfile(scenario.salary) }
   }),
 })

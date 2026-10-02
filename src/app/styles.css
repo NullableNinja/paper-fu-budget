@@ -318,6 +318,14 @@
 .theme-root .line-item-copy small:empty{display:none}
 .theme-root .line-table-row .line-name{font-weight:500}
 
+/* The ledger is statement-like: readable serif names and an always-visible
+   category-order control with spreadsheet order selected by default. */
+.theme-root .line-table-row .line-name{font-family:Cambria,Georgia,'Times New Roman',serif;font-weight:400}
+.theme-root .line-sort-control{display:flex;align-items:center;gap:5px;flex-wrap:wrap;white-space:nowrap}
+.theme-root .line-sort-control>span{margin-right:2px;color:var(--muted)}
+.theme-root .line-sort-control button{border:1px solid var(--line);background:var(--paper);color:var(--muted);padding:5px 8px;font:10px 'DM Mono',monospace;cursor:pointer}
+.theme-root .line-sort-control button:hover,.theme-root .line-sort-control button.selected{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
 /* Ledger typography and shape: statement-like names, restrained surfaces. */
 .theme-root .line-item-copy{font-family:Cambria,Georgia,'Times New Roman',serif}
 .theme-root .line-name{font-family:Cambria,Georgia,'Times New Roman',serif;font-size:15px;letter-spacing:-.01em}
@@ -339,3 +347,13 @@
   background:color-mix(in srgb,var(--negative) 82%,var(--ink))!important;
   box-shadow:3px 3px 0 color-mix(in srgb,var(--negative) 55%,var(--ink))!important;
 }
+.theme-root .button.danger-solid{color:#fff!important;background:#c43f2b!important;border-color:#8f2416!important;box-shadow:3px 3px 0 #7b2115!important}
+.theme-root .button.danger-solid:hover{color:#fff!important;background:#a92f20!important;border-color:#7b2115!important;box-shadow:4px 4px 0 #64190f!important}
+.theme-root .field-label-hint{font:10px 'DM Mono',monospace;font-weight:400;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.theme-root .tag-editor-field{gap:7px}
+.confirm-backdrop{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;background:color-mix(in srgb,var(--shadow-color) 72%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.confirm-dialog{width:min(430px,100%);padding:26px;background:var(--paper);color:var(--ink);border:1px solid color-mix(in srgb,var(--ink) 42%,var(--line));box-shadow:12px 12px 0 color-mix(in srgb,var(--shadow-color) 28%,transparent)}
+.confirm-dialog h2{margin:0 0 10px;font-size:25px;letter-spacing:-.04em}
+.confirm-dialog p:not(.eyebrow){margin:0;color:var(--muted);line-height:1.5;font-size:13px}
+.confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+@media (max-width:700px){.confirm-dialog{padding:22px}.confirm-actions{display:grid;grid-template-columns:1fr 1fr}.confirm-actions .button{width:100%}}

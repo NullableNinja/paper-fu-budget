@@ -66,4 +66,7 @@ export const nextPaycheck = (scenario: BudgetScenario) => {
 }
 
 export const formatCurrency = (value: number, compact = false) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: compact ? 0 : 2 }).format(value)
-export const formatSignedCurrency = (value: number) => `${value >= 0 ? '+' : '-'}${formatCurrency(Math.abs(value), true)}`
+
+// Signed balances are decision-critical. Keep cents visible so the display never
+// makes a small surplus or shortfall look materially different from the math.
+export const formatSignedCurrency = (value: number) => `${value >= 0 ? '+' : '-'}${formatCurrency(Math.abs(value))}`
